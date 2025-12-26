@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikidata Template Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 650px;
+            width: 100%;
+        }
+        .result-item {
+            transition: all 0.2s;
+        }
+        .result-item:hover .template-button {
+            background-color: #1e40af; /* Darker blue on hover */
+        }
+        .result-item:hover .notability-button {
+            background-color: #059669; /* Darker green on hover */
+        }
+        
+        .template-button, .notability-button {
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+            cursor: pointer;
+        }
+
+        .template-button {
+            background-color: #3b82f6; /* Blue 500 */
+            color: white;
+        }
+
+        .notability-button {
+            background-color: #10b981; /* Emerald 500 */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container bg-white p-6 md:p-10 rounded-xl shadow-2xl border border-gray-100">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Wikidata & WikiTree Tool</h1>
+        <p class="text-gray-500 mb-6">Search Wikidata for any entity. Get the WikiTree template and a brief fact-based statement of notability.</p>
+
+        <!-- Search Input Form -->
+        <div class="space-y-4 mb-8">
+            <div>
+                <label for="personName" class="block text-sm font-medium text-gray-700">Entity Name</label>
+                <input type="text" id="personName" placeholder="e.g., Jane Austen or Eiffel Tower"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" required>
+            </div>
+            <div>
+                <label for="birthYear" class="block text-sm font-medium text-gray-700">Year Context (Optional)</label>
+                <input type="text" id="birthYear" placeholder="e.g., 1813 (YYYY)"
+                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                <p class="text-xs text-gray-500 mt-1">Used for confirmation in the search results list.</p>
+            </div>
+            <button id="searchButton" onclick="searchWikidata()"
+                    class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out disabled:opacity-50">
+                <span id="buttonText">Search Wikidata (Up to 20 Results)</span>
+                <div id="loadingSpinner" class="hidden h-5 w-5 border-2 border-white border-r-transparent rounded-full animate-spin ml-2" role="status"></div>
+            </button>
+        </div>
+
+        <!-- Search Results Area -->
+        <div id="resultsArea" class="hidden">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Select or Analyze an Entity:</h2>
+            <div id="resultsList" class="space-y-3">
+                <!-- Results will be injected here -->
+            </div>
+            <p id="noResults" class="hidden text-red-500 mt-4">No results found for that name. Please refine your search.</p>
+        </div>
+        
+        <!-- Template Output Area -->
+        <div id="templateOutput" class="hidden mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Generated WikiTree Template</h2>
+            <div class="bg-gray-100 p-4 rounded-lg border border-gray-300 relative">
+                <code id="generatedTemplate" class="block text-gray-800 break-words pr-12"></code>
+                <button onclick="copyToClipboard('generatedTemplate')"
+                        class="absolute top-2 right-2 p-2 rounded-lg text-sm text-white bg-green-500 hover:bg-green-600 transition duration-150">
+                    Copy
+                </button>
+            </div>
+            <p id="copyMessage" class="mt-2 text-sm text-green-600 hidden">Template copied to clipboard!</p>
+        </div>
+
+        <!-- Notability Statement Output Area -->
+        <div id="notabilityOutput" class="hidden mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Brief Statement of Notability (Wikidata Facts)</h2>
+            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                <p id="notabilityText" class="text-gray-800 italic"></p>
+                <div id="notabilityLoading" class="text-indigo-600 flex items-center mt-2 hidden">
+                    <div class="h-4 w-4 border-2 border-indigo-500 border-r-transparent rounded-full animate-spin mr-2"></div>
+                    Fetching and constructing statement from Wikidata...
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Alert/Error Box -->
+        <div id="messageBox" class="mt-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden" role="alert">
+            <p id="messageText" class="font-medium"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration and API Settings ---
+        const WIKIDATA_API_URL = "https://www.wikidata.org/w/api.php";
+
+        // Map for converting country names to adjectives for the notability statement
+        const NATIONALITY_MAP = {
+            "United States of America": "American",
+            "United Kingdom": "British",
+            "England": "English",
+            "France": "French",
+            "Germany": "German",
+            "Italy": "Italian",
+            "Spain": "Spanish",
+            "Canada": "Canadian",
+            "Australia": "Australian",
+            "Mexico": "Mexican",
+            "Japan": "Japanese",
+            "China": "Chinese",
+            "India": "Indian",
+            "Russia": "Russian",
+            "Ireland": "Irish",
+            "Scotland": "Scottish",
+            "Wales": "Welsh",
+            "Brazil": "Brazilian",
+            "Netherlands": "Dutch",
+            "Sweden": "Swedish",
+            "Norway": "Norwegian",
+            "Denmark": "Danish",
+            "Switzerland": "Swiss",
+            "Egypt": "Egyptian",
+            // Add more common mappings as needed
+        };
+
+        // --- Utility Functions ---
+        
+        function showMessage(message, type = 'error') {
+            const box = document.getElementById('messageBox');
+            const text = document.getElementById('messageText');
+            
+            box.className = 'mt-8 p-4 rounded-lg hidden';
+            if (type === 'error') {
+                box.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+            } else if (type === 'success') {
+                box.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
+            }
+            box.classList.remove('hidden');
+
+            text.textContent = message;
+            box.scrollIntoView({ behavior: 'smooth' });
+
+            setTimeout(() => {
+                box.classList.add('hidden');
+            }, 5000);
+        }
+
+        /**
+         * Generic fetch function with exponential backoff for resilience.
+         */
+        async function fetchWithBackoff(url, retries = 3, delay = 1000, options = {}) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    if (i < retries - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2; 
+                    } else {
+                        throw new Error(`Failed to fetch data after ${retries} attempts.`);
+                    }
+                }
+            }
+        }
+        
+        /**
+         * Copies text from an element to the clipboard.
+         */
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                const copyMessage = document.getElementById('copyMessage');
+                copyMessage.classList.remove('hidden');
+                setTimeout(() => {
+                    copyMessage.classList.add('hidden');
+                }, 2000);
+            } catch (err) {
+                showMessage('Failed to copy template. Please copy it manually.', 'error');
+            }
+            
+            selection.removeAllRanges();
+        }
+
+        // --- Core Application Logic ---
+
+        /**
+         * Searches Wikidata for entities matching the name input.
+         */
+        async function searchWikidata() {
+            const name = document.getElementById('personName').value.trim();
+            const birthYear = document.getElementById('birthYear').value.trim();
+            
+            const button = document.getElementById('searchButton');
+            const buttonText = document.getElementById('buttonText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const resultsArea = document.getElementById('resultsArea');
+            const resultsList = document.getElementById('resultsList');
+            const templateOutput = document.getElementById('templateOutput');
+            const notabilityOutput = document.getElementById('notabilityOutput');
+            const noResults = document.getElementById('noResults');
+
+            // Reset UI
+            resultsArea.classList.add('hidden');
+            templateOutput.classList.add('hidden');
+            notabilityOutput.classList.add('hidden');
+            resultsList.innerHTML = '';
+            noResults.classList.add('hidden');
+            button.disabled = true;
+            buttonText.textContent = 'Searching...';
+            loadingSpinner.classList.remove('hidden');
+
+            if (!name) {
+                showMessage("Please enter a name to search.");
+                button.disabled = false;
+                buttonText.textContent = 'Search Wikidata (Up to 20 Results)';
+                loadingSpinner.classList.add('hidden');
+                return;
+            }
+
+            const searchParams = new URLSearchParams({
+                action: 'wbsearchentities',
+                search: name,
+                language: 'en',
+                uselang: 'en',
+                format: 'json',
+                type: 'item',
+                limit: 20,
+                origin: '*' 
+            });
+
+            const url = `${WIKIDATA_API_URL}?${searchParams.toString()}`;
+
+            try {
+                const data = await fetchWithBackoff(url);
+                
+                if (data.search && data.search.length > 0) {
+                    renderResults(data.search, birthYear);
+                    resultsArea.classList.remove('hidden');
+                } else {
+                    noResults.classList.remove('hidden');
+                    resultsArea.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error("Wikidata search failed:", error);
+                showMessage("Wikidata search failed due to an API error. Please try again later.");
+            } finally {
+                button.disabled = false;
+                buttonText.textContent = 'Search Wikidata (Up to 20 Results)';
+                loadingSpinner.classList.add('hidden');
+            }
+        }
+
+        function renderResults(results, birthYear) {
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = ''; 
+
+            results.forEach(item => {
+                const title = item.label || 'Unknown Title';
+                const description = item.description || 'No description available.';
+                const qid = item.id;
+                
+                const yearContext = birthYear ? `<span class="text-xs text-blue-500 font-semibold ml-2">(Year: ${birthYear})</span>` : '';
+
+                const listItem = document.createElement('div');
+                listItem.className = 'result-item bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-md flex flex-col space-y-3';
+                listItem.innerHTML = `
+                    <div>
+                        <p class="text-lg font-semibold text-gray-800">${title} ${yearContext}</p>
+                        <p class="text-sm text-gray-600">QID: <span class="font-mono text-xs bg-gray-200 p-1 rounded">${qid}</span></p>
+                        <p class="text-sm text-gray-500 mt-1">${description}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="template-button" onclick="selectItem('${qid}')">
+                            Generate Template
+                        </button>
+                        <button class="notability-button" onclick="generateNotabilityStatement('${qid}', '${title.replace(/'/g, "\\'")}')">
+                            Create Notability Statement
+                        </button>
+                    </div>
+                `;
+                resultsList.appendChild(listItem);
+            });
+        }
+
+        function selectItem(qid) {
+            const template = `{{Wikidata| ${qid}|en}}`;
+            document.getElementById('generatedTemplate').textContent = template;
+            document.getElementById('templateOutput').classList.remove('hidden');
+            document.getElementById('notabilityOutput').classList.add('hidden'); // Hide notability when generating template
+            
+            document.getElementById('templateOutput').scrollIntoView({ behavior: 'smooth' });
+            
+            copyToClipboard('generatedTemplate');
+        }
+
+
+        /**
+         * Fetches a single Wikidata entity's claims and basic info.
+         */
+        async function fetchWikidataEntityDetails(qid) {
+            const params = new URLSearchParams({
+                action: 'wbgetentities',
+                ids: qid,
+                props: 'claims|labels', 
+                languages: 'en',
+                format: 'json',
+                origin: '*'
+            });
+            const url = `${WIKIDATA_API_URL}?${params.toString()}`;
+
+            const data = await fetchWithBackoff(url);
+            
+            if (data.entities && data.entities[qid]) {
+                return data.entities[qid];
+            }
+            throw new Error(`Failed to retrieve entity details for ${qid}.`);
+        }
+
+        /**
+         * Fetches English labels for an array of QIDs.
+         * Returns an object mapping QID -> Label.
+         */
+        async function fetchWikidataLabels(qids) {
+            if (qids.length === 0) return {};
+
+            const params = new URLSearchParams({
+                action: 'wbgetentities',
+                ids: qids.join('|'),
+                props: 'labels',
+                languages: 'en',
+                format: 'json',
+                origin: '*'
+            });
+            const url = `${WIKIDATA_API_URL}?${params.toString()}`;
+
+            const data = await fetchWithBackoff(url);
+            const resolved = {};
+
+            if (data.entities) {
+                for (const qid in data.entities) {
+                    const entity = data.entities[qid];
+                    // Prefer English label, fallback to QID if not found
+                    if (entity.labels && entity.labels.en) {
+                        resolved[qid] = entity.labels.en.value;
+                    } else {
+                        resolved[qid] = qid; 
+                    }
+                }
+            }
+            return resolved;
+        }
+
+
+        /**
+         * Extracts property values and collects unique QIDs used in them.
+         * Returns an array of raw values (strings or QIDs) and an array of QIDs that need label lookup.
+         */
+        function getClaimValues(entity, propertyId) {
+            const claims = entity.claims?.[propertyId];
+            if (!claims) return { values: [], qidsToLookup: [] };
+
+            const values = [];
+            const qidsToLookup = [];
+
+            claims.forEach(claim => {
+                const dataValue = claim.mainsnak.datavalue;
+                if (dataValue && dataValue.type === 'wikibase-entityid') {
+                    const itemId = dataValue.value.id;
+                    values.push(itemId); // Store QID for resolution
+                    qidsToLookup.push(itemId);
+                } else if (dataValue && dataValue.type === 'string') {
+                    values.push(dataValue.value); // Store string directly
+                }
+            });
+            // Deduplicate lookup QIDs
+            return { values: values, qidsToLookup: [...new Set(qidsToLookup)] };
+        }
+
+
+        /**
+         * Generates a basic notability statement using structured Wikidata properties.
+         * NOW USES P39 (Position held) and P166 (Award received) instead of P1196 (Obituary).
+         */
+        async function generateNotabilityStatement(qid, title) {
+            const outputDiv = document.getElementById('notabilityOutput');
+            const loading = document.getElementById('notabilityLoading');
+            const textElement = document.getElementById('notabilityText');
+            
+            // Hide template output
+            document.getElementById('templateOutput').classList.add('hidden'); 
+            
+            // Show loading state
+            outputDiv.classList.remove('hidden');
+            textElement.textContent = '';
+            loading.classList.remove('hidden');
+            outputDiv.scrollIntoView({ behavior: 'smooth' });
+
+            try {
+                // Step 1: Fetch the main entity
+                const entity = await fetchWikidataEntityDetails(qid);
+                
+                // Step 2: Extract all relevant claims and the QIDs they contain
+                const { values: occupationValues, qidsToLookup: lookup1 } = getClaimValues(entity, 'P106'); // Occupation
+                const { values: positionValues, qidsToLookup: lookup2 } = getClaimValues(entity, 'P39'); // Position held (PRIORITIZED)
+                const { values: citizenshipValues, qidsToLookup: lookup3 } = getClaimValues(entity, 'P27'); // Country of citizenship
+                const { values: awardValues, qidsToLookup: lookup4 } = getClaimValues(entity, 'P166'); // Award received (NEW)
+
+                const allQIDsToLookup = [...new Set([...lookup1, ...lookup2, ...lookup3, ...lookup4])];
+
+                // Step 3: Resolve all claimed QIDs to their English labels
+                let resolvedLabels = {};
+                if (allQIDsToLookup.length > 0) {
+                    resolvedLabels = await fetchWikidataLabels(allQIDsToLookup);
+                }
+
+                // Step 4: Map QIDs to resolved labels
+                const occupations = occupationValues.map(id => resolvedLabels[id] || id).filter(v => v);
+                const positions = positionValues.map(id => resolvedLabels[id] || id).filter(v => v);
+                const citizenships = citizenshipValues.map(id => resolvedLabels[id] || id).filter(v => v);
+                const awards = awardValues.map(id => resolvedLabels[id] || id).filter(v => v); // Awards received
+
+                let nationality = '';
+                if (citizenships.length > 0) {
+                    // Use the first citizenship/country and map it to an adjective
+                    const countryName = citizenships[0];
+                    nationality = NATIONALITY_MAP[countryName] || countryName; // Fallback to country name if no map entry
+                }
+
+                // Combine occupations and positions for the initial descriptive phrase
+                const primaryTags = [...occupations, ...positions].slice(0, 3);
+                const primaryTagString = primaryTags.join(', ');
+
+                let statement = '';
+
+                // Construct initial statement: "Name" was a "Nationality" "Occupation"
+                if (nationality && primaryTags.length > 0) {
+                    // Ex: Jane Austen was an English novelist, writer, and author.
+                    statement = `${title} was a ${nationality} ${primaryTagString}`;
+                } else if (primaryTags.length > 0) {
+                    // Ex: Jane Austen was a novelist, writer, and author.
+                    statement = `${title} was a ${primaryTagString}`;
+                } else if (nationality) {
+                    // Ex: Jane Austen was a figure from England.
+                    statement = `${title} was a figure from ${citizenships[0]}`;
+                } else {
+                    // Fallback
+                    statement = `${title} (QID: ${qid}) is documented in Wikidata, but lacks key descriptive data (Occupation, Position, or Citizenship) to construct a detailed statement.`;
+                }
+
+                // Step 5: Append Awards information if available
+                if (awards.length > 0 && primaryTags.length > 0) {
+                    // If we already have a core statement, append the awards.
+                    const awardString = awards.slice(0, 3).join(', '); // Use up to 3 awards
+                    statement += `. ${title} received awards including the ${awardString}.`;
+                } else if (awards.length > 0) {
+                    // If no primary tags were found, start the statement with awards
+                    const awardString = awards.slice(0, 3).join(', ');
+                    statement = `${title} is known to have received awards including the ${awardString}.`;
+                } else if (!statement.endsWith('.')) {
+                    // Ensure the initial statement ends with a period if it hasn't yet.
+                    statement += '.';
+                }
+
+
+                // Clean up and display
+                textElement.textContent = statement.replace(/\.\.+/g, '.').trim();
+                showMessage(`Fact-based statement generated for ${title}!`, 'success');
+
+            } catch (error) {
+                console.error("Wikidata Notability Fetch Error:", error);
+                textElement.textContent = `Error: Could not retrieve Wikidata details for the notability statement. (${error.message})`;
+                showMessage(`Could not generate statement for ${title}.`, 'error');
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+    </script>
+</body>
+</html>
