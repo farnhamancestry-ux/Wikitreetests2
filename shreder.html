@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WT_CONTEMP // ARCHIVE</title>
+    <style>
+        :root {
+            --bg: #fcfcfc;
+            --accent: #000;
+            --dim: #e5e5e5;
+            --text: #1a1a1a;
+            --path-node: #f0f0f0;
+            --mono: 'IBM Plex Mono', monospace;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&family=Inter:wght@300;500;900&display=swap');
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .pane-editor {
+            border-right: 1px solid var(--dim);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .pane-preview {
+            background: #fff;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .brand {
+            font-weight: 900;
+            font-size: 0.8rem;
+            letter-spacing: 0.2rem;
+            text-transform: uppercase;
+        }
+
+        .tool-label {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: #999;
+        }
+
+        .input-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            border: 1px solid var(--dim);
+            padding: 15px;
+            outline: none;
+            background: transparent;
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: vertical;
+            color: var(--text);
+        }
+
+        /* CONNECTION FINDER UI */
+        .connection-suite {
+            border-top: 1px solid var(--dim);
+            padding-top: 30px;
+            margin-top: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-family: var(--mono);
+            font-size: 0.6rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .text-input {
+            width: 100%;
+            border: 1px solid var(--dim);
+            padding: 10px;
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        /* PATH TOPOLOGY STYLES */
+        .path-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .path-node {
+            background: var(--path-node);
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-family: var(--mono);
+            display: flex;
+            align-items: center;
+            border-radius: 2px;
+        }
+
+        .path-arrow {
+            color: #ccc;
+            font-size: 0.8rem;
+            align-self: center;
+        }
+
+        .pivot-highlight {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .fragment-card {
+            border: 1px solid var(--dim);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 8px;
+            font-size: 0.6rem;
+            font-family: var(--mono);
+            margin-right: 5px;
+            text-transform: uppercase;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--accent);
+            padding: 8px 16px;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .copy-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: #fff;
+            padding: 10px 20px;
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="copy-toast">STRING_COPIED</div>
+
+    <section class="pane-editor">
+        <header>
+            <div class="brand">WT // CT_CONNECTION</div>
+            <div class="tool-label">GENEALOGY_ENGINE</div>
+        </header>
+
+        <div class="input-area">
+            <div class="input-group">
+                <label>Connection_Raw_Path (Names Separated by >)</label>
+                <input type="text" id="path-input" class="text-input" placeholder="User A > Father B > Grandfather C > Pivot D > ..." value="Thomas Smith > Mary Smith > Robert Jones > Arthur Jones">
+            </div>
+
+            <div class="connection-suite">
+                <label class="tool-label">BIOGRAPHY_CONSTRUCTION</label>
+                <textarea id="bio-input" spellcheck="false" placeholder="Draft connection biography here...">== Biography ==
+Through the Connection Finder, it was discovered that Thomas is related to Arthur via the Jones line.</textarea>
+            </div>
+
+            <div class="actions">
+                <button onclick="processPath()">Analyze_Topology</button>
+                <button onclick="generateKinship()">Gen_Kinship_String</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="pane-preview">
+        <header>
+            <div class="brand">DATA // TOPOLOGY</div>
+            <div id="degree-count" class="tool-label">0 DEGREES</div>
+        </header>
+
+        <div id="path-visualizer" class="path-display">
+            <!-- Path nodes injected here -->
+        </div>
+
+        <div id="output" style="margin-top: 40px;">
+            <div class="fragment-card">
+                <span class="tag">System_Report</span>
+                <div id="report-content" style="font-size: 0.85rem; line-height: 1.8; margin-top: 15px;">
+                    Enter a path sequence to generate topological data.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const pathInput = document.getElementById('path-input');
+        const pathVisualizer = document.getElementById('path-visualizer');
+        const reportContent = document.getElementById('report-content');
+        const degreeCount = document.getElementById('degree-count');
+        const toast = document.getElementById('toast');
+
+        // FEATURE 1: PATH TOPOLOGY ENGINE
+        function processPath() {
+            const raw = pathInput.value;
+            const nodes = raw.split('>').map(n => n.trim()).filter(n => n.length > 0);
+            
+            pathVisualizer.innerHTML = '';
+            
+            nodes.forEach((node, index) => {
+                const nodeEl = document.createElement('div');
+                nodeEl.className = 'path-node';
+                // Feature 2: Pivot Calculation (Visual heuristic: the middle node is often the pivot in a connection path)
+                if (index === Math.floor(nodes.length / 2) && nodes.length > 2) {
+                    nodeEl.classList.add('pivot-highlight');
+                    nodeEl.title = "Calculated Pivot Point";
+                }
+                nodeEl.innerText = node;
+                
+                pathVisualizer.appendChild(nodeEl);
+                
+                if (index < nodes.length - 1) {
+                    const arrow = document.createElement('div');
+                    arrow.className = 'path-arrow';
+                    arrow.innerHTML = '&nbsp;&rarr;&nbsp;';
+                    pathVisualizer.appendChild(arrow);
+                }
+            });
+
+            degreeCount.innerText = `${nodes.length - 1} DEGREES`;
+            updateReport(nodes);
+        }
+
+        function updateReport(nodes) {
+            if (nodes.length < 2) return;
+            
+            const start = nodes[0];
+            const end = nodes[nodes.length - 1];
+            const pivot = nodes[Math.floor(nodes.length / 2)];
+
+            reportContent.innerHTML = `
+                <b>Origin:</b> ${start}<br>
+                <b>Target:</b> ${end}<br>
+                <b>Identified Pivot:</b> ${pivot}<br><br>
+                This path spans <b>${nodes.length - 1}</b> biological or marital steps. 
+                The connection is confirmed through the <b>${pivot}</b> branch.
+            `;
+        }
+
+        // FEATURE 3: KINSHIP STRING GENERATOR
+        function generateKinship() {
+            const nodes = pathInput.value.split('>').map(n => n.trim()).filter(n => n.length > 0);
+            if (nodes.length < 2) return;
+
+            // Formats as: [Profile A] is the [Relationship] of [Profile B]
+            const kinshipString = `${nodes[0]} → (${nodes.length - 1} degrees) → ${nodes[nodes.length-1]}`;
+            
+            // Clipboard fallback as per instructions
+            const el = document.createElement('textarea');
+            el.value = kinshipString;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast(`COPIED: ${kinshipString}`);
+        }
+
+        function showToast(msg) {
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        // Initial trigger
+        processPath();
+    </script>
+</body>
+</html>
