@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiTree GRO Reference Generator</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the app */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            color: white;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-generate {
+            background-color: #3b82f6;
+        }
+        .btn-generate:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy, .btn-parse {
+            background-color: #10b981;
+        }
+        .btn-copy:hover, .btn-parse:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-parse {
+            background-color: #f59e0b; /* Amber for parsing */
+        }
+        .btn-parse:hover {
+            background-color: #d97706;
+        }
+
+        .message-box {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6">
+    <div class="container mx-auto p-8 bg-white rounded-3xl shadow-xl space-y-8">
+        <h1 class="text-4xl font-extrabold text-center text-gray-800 tracking-tight">WikiTree GRO Reference Generator</h1>
+        
+        <!-- Reference Parsing Section -->
+        <div class="p-6 bg-yellow-50 rounded-xl border border-yellow-200 space-y-4">
+            <h2 class="text-xl font-bold text-yellow-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Auto-Fill Reference Parser
+            </h2>
+            <p class="text-sm text-gray-600">
+                Paste your raw GRO search result text (e.g., `FARNHAM, FRANCIS JOSEPH BLACKLOCK GRO Reference: 1918 S Quarter in DARTFORD Volume 02A Page 881`) below and click **Parse** to auto-populate the form fields.
+            </p>
+            <textarea id="rawInput" rows="3" class="w-full p-3 bg-white border border-yellow-400 rounded-lg font-mono text-xs" placeholder="Paste full GRO result text here..."></textarea>
+            <div class="flex justify-end">
+                <button id="parseBtn" class="btn btn-parse">Parse Reference</button>
+            </div>
+        </div>
+
+        <p class="text-center text-gray-600 border-t pt-6">--- OR --- Enter details manually below to generate the formatted reference.</p>
+        
+        <form id="groForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Individual Details -->
+            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="input-group space-y-2">
+                    <label for="surname" class="block text-sm">Surname</label>
+                    <input type="text" id="surname" value="" class="w-full" placeholder="FARNHAM">
+                </div>
+                <div class="input-group space-y-2">
+                    <label for="forename1" class="block text-sm">Forename 1</label>
+                    <input type="text" id="forename1" value="" class="w-full" placeholder="FRANCIS">
+                </div>
+                <div class="input-group space-y-2">
+                    <label for="forename2" class="block text-sm">Forename 2 (optional)</label>
+                    <input type="text" id="forename2" value="" class="w-full" placeholder="JOSEPH">
+                </div>
+                <div class="input-group space-y-2 md:col-span-2">
+                    <label for="motherSurname" class="block text-sm">Mother's Maiden Surname</label>
+                    <input type="text" id="motherSurname" value="" class="w-full" placeholder="BLACKLOCK">
+                </div>
+                <div class="input-group space-y-2">
+                    <label for="gender" class="block text-sm">Gender</label>
+                    <select id="gender" class="w-full">
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Registration Details -->
+            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="input-group space-y-2">
+                    <label for="year" class="block text-sm">Year</label>
+                    <input type="number" id="year" value="" class="w-full" placeholder="1918">
+                </div>
+                <div class="input-group space-y-2">
+                    <label for="quarter" class="block text-sm">Quarter</label>
+                    <!-- UPDATED: The value is now the first letter of the LAST month of the quarter (M, J, S, D) -->
+                    <select id="quarter" class="w-full">
+                        <option value="M">Jan-Feb-Mar (M)</option>
+                        <option value="J">Apr-May-Jun (J)</option>
+                        <option value="S">Jul-Aug-Sep (S)</option>
+                        <option value="D" selected>Oct-Nov-Dec (D)</option>
+                    </select>
+                </div>
+                <div class="input-group space-y-2">
+                    <label for="volume" class="block text-sm">Volume</label>
+                    <input type="text" id="volume" value="" class="w-full" placeholder="02A">
+                </div>
+                <div class="input-group space-y-2">
+                    <label for="page" class="block text-sm">Page</label>
+                    <input type="number" id="page" value="" class="w-full" placeholder="881">
+                </div>
+            </div>
+
+            <div class="input-group space-y-2 md:col-span-2">
+                <label for="district" class="block text-sm">District</label>
+                <input type="text" id="district" value="" class="w-full" placeholder="DARTFORD">
+            </div>
+        </form>
+        
+        <div class="flex justify-center md:justify-end gap-4">
+            <button id="generateBtn" class="btn btn-generate">Generate Reference</button>
+            <button id="copyBtn" class="btn btn-copy" disabled>Copy to Clipboard</button>
+        </div>
+
+        <!-- Output and message box -->
+        <div class="space-y-4">
+            <h3 class="text-xl font-semibold text-gray-700">Generated WikiTree Reference</h3>
+            <textarea id="output" rows="10" readonly class="w-full p-4 bg-gray-50 border border-gray-300 rounded-xl font-mono text-sm resize-none" placeholder="Click 'Generate Reference' to see the result here."></textarea>
+        </div>
+
+        <div id="messageBox" class="message-box"></div>
+    </div>
+
+    <script>
+        // DOM element references
+        const surnameEl = document.getElementById('surname');
+        const forename1El = document.getElementById('forename1');
+        const forename2El = document.getElementById('forename2');
+        const motherSurnameEl = document.getElementById('motherSurname');
+        const genderEl = document.getElementById('gender');
+        const yearEl = document.getElementById('year');
+        const quarterEl = document.getElementById('quarter');
+        const districtEl = document.getElementById('district');
+        const volumeEl = document.getElementById('volume');
+        const pageEl = document.getElementById('page');
+        const outputEl = document.getElementById('output');
+        const rawInputEl = document.getElementById('rawInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const parseBtn = document.getElementById('parseBtn');
+        const messageBox = document.getElementById('messageBox');
+        
+        // Function to URL-encode the district
+        function urlEncodeDistrict(district) {
+            // Encode the district name and convert to uppercase for the GRO link format
+            return encodeURIComponent(district).toUpperCase();
+        }
+
+        // Function to display a temporary message
+        function showMessage(text, isError = false) {
+            messageBox.textContent = text;
+            messageBox.style.backgroundColor = isError ? '#ef4444' : '#10b981';
+            messageBox.style.opacity = 1;
+            setTimeout(() => {
+                messageBox.style.opacity = 0;
+            }, 3000);
+        }
+
+        // Function to generate the WikiTree reference
+        function generateReference() {
+            // Get form values
+            const surname = surnameEl.value.trim();
+            const forename1 = forename1El.value.trim();
+            const forename2 = forename2El.value.trim();
+            const motherSurname = motherSurnameEl.value.trim();
+            const gender = genderEl.value;
+            const year = yearEl.value.trim();
+            const quarterSelectEl = document.getElementById('quarter');
+            
+            // Get the human-readable quarter description for the output text
+            const quarterDescription = quarterSelectEl.options[quarterSelectEl.selectedIndex].text;
+            // Get the GRO index code for the URL (this is the value of the option: M, J, S, D)
+            const quarterCode = quarterSelectEl.value; 
+
+            const district = districtEl.value.trim();
+            const volume = volumeEl.value.trim();
+            const page = pageEl.value.trim();
+
+            // Validate required fields
+            if (!surname || !forename1 || !motherSurname || !year || !district || !volume || !page) {
+                showMessage("Please fill in all required fields.", true);
+                outputEl.value = "";
+                copyBtn.disabled = true;
+                return;
+            }
+
+            // Get current date for the "accessed" part
+            const now = new Date();
+            const accessedDate = `${now.getDate()} ${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`;
+
+            // Handle optional second forename
+            const fullForename = forename2 ? `${forename1} ${forename2}` : forename1;
+            
+            // Build the reference string using a template literal for readability
+            const ref = `<ref>
+'''Birth Registration''':
+"England & Wales General Register Office"<br/>
+[https://www.gro.gov.uk/gro/content/certificates/indexes_search.asp?index=EW_Birth&Year=${year}&Range=0&Surname=${surname.toUpperCase()}&MothersSurname=${motherSurname.toUpperCase()}&Forename1=${forename1.toUpperCase()}&Forename2=${forename2.toUpperCase()}&Gender=${gender}&Quarter=${quarterCode}&District=${urlEncodeDistrict(district)}&Volume=${volume.toUpperCase()}&Page=${page} GRO Online Indexes - Birth] (accessed ${accessedDate})<br/>
+${surname}, ${fullForename} (Mother's maiden name: ${motherSurname}).<br/>
+''GRO Reference:'' ${year} ${quarterDescription.replace(/ \(.+\)/, '')} in [https://www.ukbmd.org.uk/reg/districts/${district.toLowerCase().replace(/ /g, '-')}.html ${district}] Volume ${volume} Page ${page}.
+</ref>`;
+
+            // Update the output textarea and enable the copy button
+            outputEl.value = ref;
+            copyBtn.disabled = false;
+        }
+        
+        /**
+         * Parses the raw GRO text input and populates the form fields.
+         */
+        function parseReference() {
+            const rawText = rawInputEl.value.trim();
+            if (!rawText) {
+                showMessage("Please paste text into the parser box first.", true);
+                return;
+            }
+
+            let success = false;
+
+            // Regex 1: Extracts names and mother's surname.
+            const nameRegex = /^([^,]+),\s*(.+?)\s+(\S+)\s*GRO Reference:/i;
+            const nameMatch = rawText.match(nameRegex);
+            
+            // Regex 2: Extracts GRO details. Anchors to 'GRO Reference:' to find the details.
+            const groRegex = /GRO Reference:\s*(\d{4})\s*(\S+)\s*Quarter in\s*([^V]+?)\s*Volume\s*(\S+)\s*Page\s*(\S+)/i;
+            const groMatch = rawText.match(groRegex);
+
+            // 1. Process Name Data
+            if (nameMatch) {
+                surnameEl.value = nameMatch[1].trim().toUpperCase();
+                motherSurnameEl.value = nameMatch[3].trim().toUpperCase();
+                
+                // Split the forenames and populate fields
+                const fullNames = nameMatch[2].trim().toUpperCase().split(/\s+/).filter(Boolean);
+                
+                forename1El.value = fullNames[0] || '';
+                // Join the remaining names for forename2
+                forename2El.value = fullNames.slice(1).join(' ') || ''; 
+                
+                success = true;
+            }
+
+            // 2. Process GRO Data
+            if (groMatch) {
+                const year = groMatch[1];
+                // groMatch[2] is the quarter code/text from the raw input (e.g., 'S' or 'OCT-NOV-DEC')
+                const quarterCodeOrText = groMatch[2].toUpperCase(); 
+                // Capture District
+                const district = groMatch[3].trim().replace(/\s+$/, '').trim().toUpperCase(); 
+                const volume = groMatch[4].trim().toUpperCase();
+                const page = groMatch[5].trim();
+
+                yearEl.value = year;
+                volumeEl.value = volume;
+                pageEl.value = page;
+                districtEl.value = district;
+
+                // --- FIX FOR QUARTER LOGIC ---
+                // Map the input text to the correct single-letter quarter code (M, J, S, D)
+                let finalQuarterCode = '';
+                const containsKeyword = (keywords) => keywords.some(str => quarterCodeOrText.includes(str));
+
+                // Q1: March
+                if (containsKeyword(['M', 'MAR', 'JAN-FEB-MAR', 'FIRST', '1ST'])) {
+                    finalQuarterCode = 'M';
+                } 
+                // Q2: June
+                else if (containsKeyword(['J', 'JUN', 'APR-MAY-JUN', 'SECOND', '2ND'])) {
+                    finalQuarterCode = 'J';
+                } 
+                // Q3: September (Uses 'S' from the input text, e.g., '1918 S Quarter')
+                else if (containsKeyword(['S', 'SEP', 'JUL-AUG-SEP', 'THIRD', '3RD'])) {
+                    finalQuarterCode = 'S';
+                } 
+                // Q4: December (Handles the old GRO online code 'O' and the new standard 'D')
+                else if (containsKeyword(['D', 'DEC', 'OCT-NOV-DEC', 'FOURTH', '4TH', 'O'])) {
+                    finalQuarterCode = 'D';
+                }
+                // Handle raw input that is already M, J, S, or D
+                else if (['M', 'J', 'S', 'D'].includes(quarterCodeOrText)) {
+                    finalQuarterCode = quarterCodeOrText;
+                }
+
+                if (finalQuarterCode) {
+                    quarterEl.value = finalQuarterCode;
+                } else {
+                     // Default to Q4 (D) if parsing fails, as it's the current selected default
+                     quarterEl.value = 'D';
+                     console.error(`Could not definitively parse quarter code '${quarterCodeOrText}'. Defaulting to 'D' (Oct-Nov-Dec).`);
+                }
+                
+                success = true;
+            }
+            
+            if (success) {
+                showMessage("Form fields populated successfully! Review the data and click 'Generate Reference'.");
+            } else {
+                showMessage("Failed to parse the reference. Please ensure the format is correct: SURNAME, FIRST NAMES MOTHER_SURNAME GRO Reference: YEAR QUARTER Quarter in DISTRICT Volume VOLUME Page PAGE.", true);
+            }
+        }
+
+        // Function to copy the text to clipboard
+        function copyReference() {
+            if (!outputEl.value) {
+                showMessage("Nothing to copy.", true);
+                return;
+            }
+            outputEl.select();
+            // Fallback for secure copy
+            try {
+                document.execCommand('copy');
+                showMessage("Reference copied!");
+            } catch (err) {
+                showMessage("Copy failed. Please copy the text manually.", true);
+            }
+        }
+
+        // Event listeners for the buttons
+        generateBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent form submission
+            generateReference();
+        });
+
+        copyBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent form submission
+            copyReference();
+        });
+        
+        parseBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            parseReference();
+        });
+
+    </script>
+</body>
+</html>
