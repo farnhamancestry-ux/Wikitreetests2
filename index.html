@@ -270,6 +270,22 @@
 
 <script>
     const songData = {
+    "1945": [
+        {
+            "artist": "John",
+            "track": "Johnson",
+            "genre": "",
+            "note": ""
+        }
+    ],
+    "1968": [
+        {
+            "artist": "Beatles",
+            "track": "Strawberry ",
+            "genre": "",
+            "note": ""
+        }
+    ],
     "1977": [
         {
             "artist": "David Bowie",
@@ -286,20 +302,8 @@
     ],
     "1983": [
         {
-            "artist": "The Cure",
-            "track": "The Walk",
-            "genre": "",
-            "note": ""
-        },
-        {
-            "artist": "Violet Femmes",
-            "track": "Gone Daddy Gone",
-            "genre": "",
-            "note": ""
-        },
-        {
-            "artist": "Echo and the Bunnymen",
-            "track": "The Cutter",
+            "artist": "Men at Work",
+            "track": "Down Under",
             "genre": "",
             "note": ""
         },
@@ -310,40 +314,8 @@
             "note": ""
         },
         {
-            "artist": "New Order",
-            "track": "Blue Monday",
-            "genre": "",
-            "note": ""
-        },
-        {
-            "artist": "Men at Work",
-            "track": "Down Under",
-            "genre": "",
-            "note": ""
-        },
-        {
-            "artist": "  Fun Boy Three",
-            "track": "Our Lips Are Sealed",
-            "genre": "",
-            "note": ""
-        },
-        {
-            "artist": "Eurythmics",
+            "artist": "Eurythmics ",
             "track": "Sweet Dreams",
-            "genre": "",
-            "note": ""
-        },
-        {
-            "artist": "Tears for Fears",
-            "track": "Pale Shelter",
-            "genre": "",
-            "note": ""
-        }
-    ],
-    "1986": [
-        {
-            "artist": "The Smiths",
-            "track": "Hand in Glive",
             "genre": "",
             "note": ""
         }
@@ -372,10 +344,10 @@
             "note": "Synthesis of 60s spy soundtracks and digital melancholy."
         }
     ],
-    "2026": [
+    "2001": [
         {
-            "artist": "",
-            "track": "",
+            "artist": "Cooper Temple clause",
+            "track": "Devil",
             "genre": "",
             "note": ""
         }
@@ -543,148 +515,12 @@
             const card = document.createElement('div');
             card.className = 'genre-card';
             card.innerHTML = `<h3>${g}</h3><p>${genres[g]} Tracks in Index</p>`;
-                  width: 40vw;
-            height: 40vw;
-            border-radius: 50%;
-            transition: transform 0.2s ease-out;
-        }
-
-        #blob-1 { background: radial-gradient(circle, var(--primary) 0%, transparent 70%); top: -10%; left: -10%; }
-        #blob-2 { background: radial-gradient(circle, var(--secondary) 0%, transparent 70%); bottom: -10%; right: -10%; }
-        #blob-3 { background: radial-gradient(circle, #f43f5e 0%, transparent 70%); top: 40%; left: 30%; width: 30vw; height: 30vw; }
-
-        /* Glassmorphism Styles */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass:hover {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px -10px rgba(0, 255, 136, 0.2);
-        }
-
-        /* Simple element customization area */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .status-pill {
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 12px;
-            background: rgba(0, 255, 136, 0.2);
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-    </style>
-</head>
-<body class="p-6 md:p-12">
-
-    <!-- Experimental Background -->
-    <div id="aura-container">
-        <div id="blob-1" class="blob"></div>
-        <div id="blob-2" class="blob"></div>
-        <div id="blob-3" class="blob"></div>
-    </div>
-
-    <main class="max-w-5xl mx-auto">
-        <!-- Header -->
-        <header class="mb-16">
-            <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tight">
-                VIBES <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00ff88] to-[#6366f1]">CODED</span>
-            </h1>
-            <p class="text-slate-400 text-xl max-w-2xl leading-relaxed">
-                A collection of specialized WikiTree utilities and experimental interface designs. 
-                Built for genealogists and code-heads.
-            </p>
-        </header>
-
-        <!-- SIMPLE ELEMENT: The Project Grid (Easy to Edit) -->
-        <section>
-            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Active Deployments</h2>
-            
-            <div class="project-grid" id="links-container">
-                <!-- Project Card 1 -->
-                <a href="#" class="glass p-8 flex flex-col justify-between h-full">
-                    <div>
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="status-pill">WikiTree App</span>
-                            <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-2">Ancestry Visualizer</h3>
-                        <p class="text-slate-400 mb-6">An experimental 3D tree viewer using WikiTree API data.</p>
-                    </div>
-                    <div class="text-sm font-mono text-primary">#genealogy #threejs</div>
-                </a>
-
-                <!-- Project Card 2 -->
-                <a href="#" class="glass p-8 flex flex-col justify-between h-full">
-                    <div>
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="status-pill">Tool</span>
-                            <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-2">Source Formatter</h3>
-                        <p class="text-slate-400 mb-6">Clean up messy citations with a single click before pasting.</p>
-                    </div>
-                    <div class="text-sm font-mono text-primary">#automation #regex</div>
-                </a>
-
-                <!-- Project Card 3 -->
-                <a href="#" class="glass p-8 flex flex-col justify-between h-full">
-                    <div>
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="status-pill">Lab</span>
-                            <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-2">CSS Bio Styles</h3>
-                        <p class="text-slate-400 mb-6">A curated list of copy-paste CSS for WikiTree profiles.</p>
-                    </div>
-                    <div class="text-sm font-mono text-primary">#design #css</div>
-                </a>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="mt-24 pt-8 border-t border-white/10 text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p>&copy; 2024 Vibes Coded. Stay curious.</p>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-white transition">WikiTree Profile</a>
-                <a href="#" class="hover:text-white transition">GitHub</a>
-                <a href="#" class="hover:text-white transition">Mastodon</a>
-            </div>
-        </footer>
-    </main>
-
-    <script>
-        // INTERACTIVE ELEMENT LOGIC: Follow the mouse with the aura blobs
-        const blobs = document.querySelectorAll('.blob');
-        
-        window.addEventListener('mousemove', (e) => {
-            const { clientX, clientY } = e;
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-
-            // Move blobs slightly relative to mouse position for a parallax effect
-            blobs.forEach((blob, index) => {
-                const speed = (index + 1) * 0.05;
-                const x = (clientX - centerX) * speed;
-                const y = (clientY - centerY) * speed;
-                blob.style.transform = `translate(${x}px, ${y}px)`;
-            });
+            card.onclick = () => filterByGenre(g);
+            genreList.appendChild(card);
         });
+    }
 
-        // Easy modification: You can add new cards programmatically here if you want
-        console.log("Welcome to Vibes Coded. To add more cards, simply copy the <a> blocks in the HTML.");
-    </script>
+    window.onload = init;
+</script>
 </body>
 </html>
