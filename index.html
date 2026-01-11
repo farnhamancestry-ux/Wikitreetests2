@@ -3,38 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WikiTree Index</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>1000 Songs | 1930 - 2029</title>
     <style>
         :root {
-            --primary: #00ff88;
-            --secondary: #6366f1;
-            --bg-dark: #0f172a;
+            --bg: #ffffff;
+            --text: #000000;
+            --subtle: #888888;
+            --line: #eeeeee;
+            --accent: #0066ff;
+            --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --text: #ffffff;
+            --subtle: #999999;
+            --line: #222222;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-dark);
-            color: white;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.5;
+            -webkit-font-smoothing: grayscale;
+            transition: background-color 0.3s ease;
         }
 
-        /* --- EXPERIMENTAL ELEMENT: Interactive Neon Aura --- */
-        #aura-container {
-            position: fixed;
+        header {
+            padding: 1.5rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border-bottom: 1px solid var(--text);
+            position: sticky;
             top: 0;
-            left: 0;
+            background: var(--bg);
+            z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+        }
+
+        /* Subtle Search Overlay */
+        #search-overlay {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: var(--bg);
+        }
+        #search-overlay.open {
+            height: 60px;
+            border-top: 1px solid var(--line);
+        }
+        .search-input {
             width: 100%;
             height: 100%;
-            z-index: -1;
-            filter: blur(80px);
-            opacity: 0.6;
+            border: none;
+            background: transparent;
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--text);
+            outline: none;
+            padding: 0 10px;
         }
 
-        .blob {
-            position: absolute;
-            width: 40vw;
+        .actions {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text);
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .header-btn:hover { opacity: 1; }
+
+        .year-horizon {
+            display: none;
+            gap: 1rem;
+            padding-bottom: 0.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .year-horizon.visible { display: flex; }
+
+        .horizon-link {
+            font-size: 0.7rem;
+            font-family: monospace;
+            cursor: pointer;
+            color: var(--subtle);
+        }
+
+        nav.decades-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        nav.decades-nav button {
+            background: none; border: none; cursor: pointer;
+            font-size: 0.65rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--subtle); padding: 0;
+        }
+
+        main { padding: 0 4rem 10rem 4rem; }
+
+        /* Genre Tags */
+        .genre-tag {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--subtle);
+            cursor: pointer;
+            margin-left: 12px;
+            padding: 2px 6px;
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+        .genre-tag:hover { border-color: var(--text); color: var(--text); }
+
+        /* Year/Song Layout */
+        .year-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            border-bottom: 1px solid var(--line);
+        }
+        .year-heading { position: sticky; top: 12rem; height: fit-content; padding: 4rem 0; }
+        .year-heading h2 { font-size: 4rem; font-weight: 800; letter-spacing: -0.04em; }
+        .year-content { padding: 4rem 0 6rem 4rem; max-width: 700px; border-left: 1px solid var(--line); }
+        .song-list { display: flex; flex-direction: column; gap: 4rem; }
+        .song-entry { position: relative; }
+        .song-title { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; }
+        .song-note { font-size: 0.95rem; color: var(--subtle); margin-top: 0.8rem; line-height: 1.7; }
+        .song-artist-link { cursor: pointer; border-bottom: 1px solid transparent; }
+        .song-artist-link:hover { border-bottom: 1px solid var(--text); }
+
+        .page-view { display: none; }
+        .active { display: block; }
+
+        /* Genre Card Grid */
+        .genre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1px;
+            background: var(--line);
+            margin-top: 4rem;
+            border: 1px solid var(--line);
+        }
+        .genre-card {
+            background: var(--bg);
+            padding: 2.5rem 2rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .genre-card:hover { background: var(--line); }
+        .genre-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; font-weight: 700; }
+        .genre-card p { font-size: 0.65rem; color: var(--subtle); text-transform: uppercase; letter-spacing: 0.1em; }
+
+        @media (max-width: 768px) {
+            header { padding: 1.5rem; }
+            main { padding: 0 1.5rem; }
+            .year-row { grid-template-columns: 1fr; }
+            .year-content { border-left: none; padding-left: 0; }
+            .year-heading { position: relative; top: 0; padding: 2rem 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <div class="title" onclick="showPage('index')">1000 SONGS.</div>
+        <div class="actions">
+            <button class="header-btn" onclick="toggleSearch()">Find</button>
+            <button class="header-btn" onclick="showPage('genres')">Genres</button>
+            <button class="header-btn" onclick="showPage('appendix')">Appendix</button>
+            <button class="header-btn" onclick="renderArtistIndex()">Registry</button>
+            <button class="header-btn" onclick="toggleTheme()">Theme</button>
+        </div>
+    </div>
+    <div id="search-overlay">
+        <input type="text" id="global-search" class="search-input" placeholder="Type artist, track, or genre..." oninput="handleSearch(this.value)">
+    </div>
+    <div class="year-horizon" id="year-horizon"></div>
+    <nav class="decades-nav" id="nav-decades"></nav>
+</header>
+
+<main>
+    <!-- Index Grid (Decades) -->
+    <div id="index-view" class="page-view active">
+        <div style="margin-top: 6rem; max-width: 600px; margin-bottom: 4rem;">
+            <p style="font-size: 1.4rem; font-weight: 300; line-height: 1.4;">
+                A curated geography of the recording era. One hundred years of <span style="font-weight: 600">choices</span>.
+            </p>
+        </div>
+        <div id="index-grid" class="genre-grid"></div>
+    </div>
+
+    <!-- Genres Taxonomy -->
+    <div id="genres-view" class="page-view">
+        <div style="margin-top: 6rem; border-bottom: 1px solid var(--text); padding-bottom: 2rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.05em;">Genres & Movements</h1>
+            <p style="color: var(--subtle); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.1em;">The Taxonomy of Change</p>
+        </div>
+        <div class="genre-grid" id="genre-list"></div>
+    </div>
+
+    <!-- Decade/Year/Search Result View -->
+    <div id="decade-view" class="page-view">
+        <div id="decade-content"></div>
+    </div>
+
+    <!-- Artist Timeline -->
+    <div id="artist-profile-view" class="page-view">
+        <div id="artist-profile-content"></div>
+    </div>
+
+    <!-- Appendix (Definitions) -->
+    <div id="appendix-view" class="page-view">
+        <div style="margin-top: 6rem; border-bottom: 1px solid var(--text); padding-bottom: 2rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.05em;">Appendix</h1>
+            <p style="color: var(--subtle); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.1em;">Terminology & Context</p>
+        </div>
+        <div id="appendix-list" style="margin-top:4rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 4rem;">
+            <div style="border-bottom: 1px solid var(--line); padding-bottom: 2rem;">
+                <h3 style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">Gated Snare</h3>
+                <p style="font-size: 0.9rem; color: var(--subtle);">A 1980s hallmarks. Massive reverb abruptly cut by a noise gate, creating a vacuum-sealed punch.</p>
+            </div>
+            <div style="border-bottom: 1px solid var(--line); padding-bottom: 2rem;">
+                <h3 style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">Mellotron</h3>
+                <p style="font-size: 0.9rem; color: var(--subtle);">The first sampler. An electro-mechanical keyboard pulling from pre-recorded tape strips.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registry -->
+    <div id="registry-view" class="page-view">
+        <div style="margin-top: 6rem; margin-bottom: 4rem;"><h1 style="font-size: 2rem; font-weight: 800;">Registry</h1></div>
+        <div id="registry-content" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;"></div>
+    </div>
+</main>
+
+<script>
+    const songData = {
+    "1977": [
+        {
+            "artist": "David Bowie",
+            "track": "Sound and Vision",
+            "genre": "Art-Rock",
+            "note": "A masterclass in restraint and gated snare texture."
+        },
+        {
+            "artist": "The Clash",
+            "track": "White Riot",
+            "genre": "Punk",
+            "note": "Pure economic friction captured on tape."
+        }
+    ],
+    "1983": [
+        {
+            "artist": "The Cure",
+            "track": "The Walk",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "Violet Femmes",
+            "track": "Gone Daddy Gone",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "Echo and the Bunnymen",
+            "track": "The Cutter",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "Public Image Limited",
+            "track": "This Is Not a Love Song",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "New Order",
+            "track": "Blue Monday",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "Men at Work",
+            "track": "Down Under",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "  Fun Boy Three",
+            "track": "Our Lips Are Sealed",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "Eurythmics",
+            "track": "Sweet Dreams",
+            "genre": "",
+            "note": ""
+        },
+        {
+            "artist": "Tears for Fears",
+            "track": "Pale Shelter",
+            "genre": "",
+            "note": ""
+        }
+    ],
+    "1986": [
+        {
+            "artist": "The Smiths",
+            "track": "Hand in Glive",
+            "genre": "",
+            "note": ""
+        }
+    ],
+    "1988": [
+        {
+            "artist": "Cocteau Twins",
+            "track": "Carolyn's Fingers",
+            "genre": "Dream-Pop",
+            "note": "The definitive example of the 4AD Sound."
+        }
+    ],
+    "1992": [
+        {
+            "artist": "Blur",
+            "track": "Popscene Fields Forever",
+            "genre": "",
+            "note": ""
+        }
+    ],
+    "1994": [
+        {
+            "artist": "Portishead",
+            "track": "Sour Times",
+            "genre": "Trip-Hop",
+            "note": "Synthesis of 60s spy soundtracks and digital melancholy."
+        }
+    ],
+    "2026": [
+        {
+            "artist": "",
+            "track": "",
+            "genre": "",
+            "note": ""
+        }
+    ]
+};
+
+    function toggleSearch() {
+        const overlay = document.getElementById('search-overlay');
+        const input = document.getElementById('global-search');
+        overlay.classList.toggle('open');
+        if (overlay.classList.contains('open')) {
+            input.focus();
+        } else {
+            input.value = '';
+        }
+    }
+
+    function handleSearch(q) {
+        if(!q) return;
+        const results = [];
+        Object.keys(songData).forEach(y => {
+            songData[y].forEach(s => {
+                const searchStr = `${s.artist} ${s.track} ${s.genre}`.toLowerCase();
+                if(searchStr.includes(q.toLowerCase())) results.push({...s, year: y});
+            });
+        });
+        
+        const container = document.getElementById('decade-content');
+        container.innerHTML = `<div style="padding: 4rem 0"><p style="font-size: 0.7rem; text-transform: uppercase; color: var(--subtle)">Found: ${results.length} matches for "${q}"</p></div>`;
+        
+        // Group by year for cleaner search results
+        const years = [...new Set(results.map(r => r.year))];
+        years.forEach(y => {
+            const yearSongs = results.filter(r => r.year === y);
+            container.appendChild(createYearRow(y, yearSongs));
+        });
+        
+        showPage('decade');
+    }
+
+    function createYearRow(year, songs) {
+        const row = document.createElement('div');
+        row.className = 'year-row';
+        row.id = `year-${year}`;
+        let songsHtml = '';
+        songs.forEach((s, i) => {
+            songsHtml += `
+                <div class="song-entry">
+                    <div class="song-meta">
+                        <span style="font-family:monospace; font-size:0.7rem; color:var(--subtle); margin-right: 1.5rem;">${(i+1).toString().padStart(2,'0')}</span>
+                        <span class="song-title">
+                            <span class="song-artist-link" onclick="showArtistProfile('${s.artist}')">${s.artist}</span> — ${s.track}
+                            <span class="genre-tag" onclick="filterByGenre('${s.genre}')">${s.genre}</span>
+                        </span>
+                    </div>
+                    <p class="song-note">${s.note}</p>
+                </div>
+            `;
+        });
+        row.innerHTML = `<div class="year-heading"><h2>${year}</h2></div><div class="year-content"><div class="song-list">${songsHtml}</div></div>`;
+        return row;
+    }
+
+    function renderDecade(startYear) {
+        const container = document.getElementById('decade-content');
+        const horizon = document.getElementById('year-horizon');
+        container.innerHTML = ''; horizon.innerHTML = '';
+        horizon.classList.add('visible');
+        for (let y = startYear; y < startYear + 10; y++) {
+            const link = document.createElement('div');
+            link.className = 'horizon-link'; link.innerText = y;
+            link.onclick = () => {
+                const el = document.getElementById(`year-${y}`);
+                if(el) el.scrollIntoView({ behavior: 'smooth' });
+            };
+            horizon.appendChild(link);
+            const songs = songData[y.toString()] || [];
+            container.appendChild(createYearRow(y, songs));
+        }
+        showPage('decade');
+    }
+
+    function filterByGenre(genre) {
+        const results = [];
+        Object.keys(songData).forEach(y => {
+            songData[y].forEach(s => {
+                if (s.genre === genre) results.push({...s, year: y});
+            });
+        });
+        const container = document.getElementById('decade-content');
+        container.innerHTML = `<div style="padding: 4rem 0"><p style="font-size: 0.7rem; text-transform: uppercase; color: var(--subtle)">Genre Lineage: ${genre}</p></div>`;
+        const years = [...new Set(results.map(r => r.year))];
+        years.forEach(y => {
+            const yearSongs = results.filter(r => r.year === y);
+            container.appendChild(createYearRow(y, yearSongs));
+        });
+        showPage('decade');
+    }
+
+    function showArtistProfile(name) {
+        const content = document.getElementById('artist-profile-content');
+        content.innerHTML = `<div style="margin-top: 6rem; border-bottom: 1px solid var(--text); padding-bottom: 2rem; margin-bottom: 4rem;"><h1 style="font-size: 4rem; font-weight: 800; letter-spacing: -0.05em;">${name}</h1></div>`;
+        Object.keys(songData).forEach(year => {
+            const matches = songData[year].filter(s => s.artist === name);
+            if(matches.length) content.appendChild(createYearRow(year, matches));
+        });
+        showPage('artist-profile');
+    }
+
+    function renderArtistIndex() {
+        const container = document.getElementById('registry-content');
+        container.innerHTML = '';
+        const artists = {};
+        Object.values(songData).flat().forEach(s => artists[s.artist] = (artists[s.artist] || 0) + 1);
+        Object.keys(artists).sort().forEach(a => {
+            const div = document.createElement('div');
+            div.style.cssText = "border-bottom:1px solid var(--line); padding:0.5rem 0; cursor:pointer; display: flex; justify-content: space-between;";
+            div.innerHTML = `<strong>${a}</strong> <span style="font-size:0.7rem; color: var(--subtle)">${artists[a]} track(s)</span>`;
+            div.onclick = () => showArtistProfile(a);
+            container.appendChild(div);
+        });
+        showPage('registry');
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id + '-view').classList.add('active');
+        if (id !== 'decade') document.getElementById('year-horizon').classList.remove('visible');
+        if (id !== 'decade' || !document.getElementById('global-search').value) {
+            document.getElementById('search-overlay').classList.remove('open');
+        }
+        window.scrollTo(0,0);
+    }
+
+    function toggleTheme() {
+        const current = document.body.getAttribute('data-theme');
+        document.body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+    function init() {
+        const grid = document.getElementById('index-grid');
+        const genreList = document.getElementById('genre-list');
+        const nav = document.getElementById('nav-decades');
+        
+        // Build Index Cards
+        for (let d = 1930; d <= 2020; d += 10) {
+            const card = document.createElement('div');
+            card.className = 'genre-card';
+            card.innerHTML = `<h3>${d}s</h3><p>${d} — ${d+9}</p>`;
+            card.onclick = () => renderDecade(d);
+            grid.appendChild(card);
+            
+            const btn = document.createElement('button');
+            btn.innerText = `${d}s`;
+            btn.onclick = () => renderDecade(d);
+            nav.appendChild(btn);
+        }
+
+        // Build Genre Cards
+        const genres = {};
+        Object.values(songData).flat().forEach(s => {
+            genres[s.genre] = (genres[s.genre] || 0) + 1;
+        });
+        Object.keys(genres).sort().forEach(g => {
+            const card = document.createElement('div');
+            card.className = 'genre-card';
+            card.innerHTML = `<h3>${g}</h3><p>${genres[g]} Tracks in Index</p>`;
+                  width: 40vw;
             height: 40vw;
             border-radius: 50%;
             transition: transform 0.2s ease-out;
