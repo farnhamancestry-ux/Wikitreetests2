@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiTree FreeBMD Sourcer</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background: #f4f7f4; color: #222; }
+        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #4b6a11; }
+        h2 { color: #4b6a11; margin-top: 0; }
+        textarea { width: 100%; height: 250px; padding: 15px; border: 2px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 13px; box-sizing: border-box; }
+        button { background: #4b6a11; color: white; border: none; padding: 15px 30px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; width: 100%; transition: 0.2s; }
+        button:hover { background: #3a520d; }
+        #output { margin-top: 25px; display: none; }
+        .citation-container { background: #eef9e6; border: 1px solid #4b6a11; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 14px; word-break: break-all; white-space: pre-wrap; margin-bottom: 10px; }
+        .copy-btn { background: #444; margin-top: 5px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>FreeBMD WikiTree Sourcer</h2>
+    <p>Paste the entire FreeBMD page text below (Ctrl+A, Ctrl+C on FreeBMD, then Ctrl+V here):</p>
+    <textarea id="input" placeholder="Paste data here..."></textarea>
+    <button onclick="makeSource()">Create Inline Citation</button>
+
+    <div id="output">
+        <div class="citation-container" id="citationBox"></div>
+        <button class="copy-btn" onclick="copyText()">Copy Citation to Clipboard</button>
+    </div>
+</div>
+
+<script>
+function makeSource() {
+    const raw = document.getElementById('input').value;
+    if (!raw.trim()) return;
+
+    // 1. Extract the Citation ID from the URL
+    // Pattern looks for cite=Hxu3bekgZWS9qSRWU%2FFF7w
+    const urlMatch = raw.match(/cite=([^&\s|]+)/);
+    const citeId = urlMatch ? urlMatch[1] : "";
+
+    // 2. Extract the Event Header (Type + Quarter + Year)
+    // Looking for "Births Jun 1951" or similar
+    const eventMatch = raw.match(/(Births|Marriages|Deaths)\s+([A-Za-z]+\s+\d{4})/i);
+    const type = eventMatch ? eventMatch[1] : "";
+    const period = eventMatch ? eventMatch[2] : "";
+
+    // 3. Find the specific Data Line
+    // This looks for a line that contains the Surname and ends with Volume and Page
+    const lines = raw.split('\n');
+    let data = { surname: "", given: "", mother: "", district: "", vol: "", page: "" };
+    
+    for (let line of lines) {
+        const trimmed = line.trim();
+        // Skip header lines or generic page text
+        if (trimmed.includes("Surname") || trimmed.includes("Postems") || trimmed.length < 10) continue;
+        
+        // Find line with volume-like pattern (e.g. 1b, 10a, 9, etc) followed by page digits
+        const match = trimmed.match(/(.*?)\s+([0-9a-z]{1,3})\s+(\d{1,6})\s+\w+$/i);
+        if (match) {
+            const vol = match[2];
+            const page = match[3];
+            const leftSide = match[1].split(/\t|\s{2,}/).filter(x => x.trim() !== "");
+            
+            data.vol = vol;
+            data.page = page;
+            data.surname = leftSide[0] || "";
+            data.given = leftSide[1] || "";
+            
+            if (type.toLowerCase() === 'births') {
+                data.mother = leftSide[2] || "";
+                data.district = leftSide.slice(3).join(" ");
+            } else {
+                data.district = leftSide.slice(2).join(" ");
+            }
+            break;
+        }
+    }
+
+    // 4. Generate current date for the "Accessed" part
+    const d = new Date();
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const accessedDate = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+    // 5. Construct the Citation
+    if (!data.vol || !data.page) {
+        alert("Couldn't find the Volume/Page numbers. Please ensure you copied the whole table.");
+        return;
+    }
+
+    const citation = `<ref>'''${type} Index''':'''\n"FreeBMD Index," database, FreeBMD (https://www.freebmd.org.uk/cgi/information.pl?cite=${citeId}&scan=1 : accessed ${accessedDate}), ${type} for ${data.given} ${data.surname}, ${period} District: ${data.district} Volume: ${data.vol} Page: ${data.page}${data.mother ? ' Mother: ' + data.mother : ''}.</ref>`;
+
+    document.getElementById('citationBox').innerText = citation;
+    document.getElementById('output').style.display = 'block';
+}
+
+function copyText() {
+    const text = document.getElementById('citationBox').innerText;
+    const dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+    alert("Copied!");
+}
+</script>
+
+</body>
+</html>
