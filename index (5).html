@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Index | Directory</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --subtle: #888888;
+            --line: #eeeeee;
+            --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --text: #ffffff;
+            --subtle: #999999;
+            --line: #222222;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.5;
+            transition: background-color 0.3s ease;
+            -webkit-font-smoothing: grayscale;
+        }
+
+        /* Header & Navigation */
+        header {
+            padding: 1.5rem 4rem;
+            border-bottom: 1px solid var(--text);
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .site-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text);
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+        .header-btn:hover { opacity: 1; }
+
+        /* Search Overlay */
+        #search-overlay {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            background: var(--bg);
+        }
+        #search-overlay.open {
+            height: 60px;
+            margin-top: 1rem;
+            border-top: 1px solid var(--line);
+        }
+        .search-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--text);
+            outline: none;
+            padding: 0 5px;
+        }
+
+        /* Layout */
+        main { padding: 0 4rem 10rem 4rem; }
+
+        .hero-section {
+            margin-top: 6rem;
+            margin-bottom: 4rem;
+            max-width: 600px;
+        }
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 1rem;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--subtle);
+        }
+
+        /* Directory Grid */
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1px;
+            background: var(--line);
+            border: 1px solid var(--line);
+        }
+
+        .dir-card {
+            background: var(--bg);
+            padding: 3rem 2rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .dir-card:hover { background: var(--line); }
+        .dir-card.hidden { display: none; }
+
+        .dir-card .num {
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: var(--subtle);
+            margin-bottom: 1rem;
+        }
+        .dir-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+        .dir-card .desc {
+            font-size: 0.65rem;
+            color: var(--subtle);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 1.5rem; }
+            main { padding: 0 1.5rem; }
+            .hero-section { margin-top: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <a href="index.html" class="site-title">DIRECTORY.</a>
+        <div class="actions">
+            <button class="header-btn" onclick="toggleSearch()">Find</button>
+            <a href="#" class="header-btn">Archive</a>
+            <button class="header-btn" onclick="toggleTheme()">Theme</button>
+        </div>
+    </div>
+    <div id="search-overlay">
+        <input type="text" id="global-search" class="search-input" placeholder="Search pages..." oninput="handleSearch(this.value)">
+    </div>
+</header>
+
+<main>
+    <section class="hero-section">
+        <h1>Internal Network</h1>
+        <p>A collection of localized resources and project pages.</p>
+    </section>
+
+    <div class="directory-grid" id="main-grid">
+        <!-- Grid will be populated by JavaScript -->
+    </div>
+</main>
+
+<script>
+    // EDIT YOUR URLS AND TITLES HERE
+    const links = [
+        { title: "1000 Songs", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/", desc: "The Recording Era Index" },
+        { title: "Project Alpha", url: "#", desc: "Experimental Sandbox" },
+        { title: "WikiTee AI", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/WikiTree%20make%20source.html", desc: "Creates WikiTree Pages From Sources" },
+        { title: "Typography Lab", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/wikiai.html", desc: "Design System" },
+        { title: "Audio Archive", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/Wikitree%20NSW%20Citation.html", desc: "Master Recordings" },
+        { title: "Visual Journal", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/Wikitree%20Wikipedia%20bio%20generator.html", desc: "Photography & Stills" },
+        { title: "Technical Registry", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/WikitreeGRo%20(1).html", desc: "Documentation" },
+        { title: "Development", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/addsongs.html", desc: "Beta Environment" },
+        { title: "Global Search", url: "https://farnhamancestry-ux.github.io/Wikitreetests2/wikiai.html", desc: "Cross-Platform Query" },
+        { title: "Appendix", url: "#", desc: "Terms & Definitions" }
+    ];
+
+    function toggleSearch() {
+        const overlay = document.getElementById('search-overlay');
+        const input = document.getElementById('global-search');
+        overlay.classList.toggle('open');
+        if (overlay.classList.contains('open')) {
+            input.focus();
+        } else {
+            input.value = '';
+            handleSearch('');
+        }
+    }
+
+    function handleSearch(query) {
+        const cards = document.querySelectorAll('.dir-card');
+        const q = query.toLowerCase();
+        
+        cards.forEach(card => {
+            const text = card.innerText.toLowerCase();
+            if (text.includes(q)) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    }
+
+    function toggleTheme() {
+        const current = document.body.getAttribute('data-theme');
+        document.body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+    function init() {
+        const grid = document.getElementById('main-grid');
+        links.forEach((item, index) => {
+            const card = document.createElement('a');
+            card.href = item.url;
+            card.className = 'dir-card';
+            card.innerHTML = `
+                <div class="num">${(index + 1).toString().padStart(2, '0')}</div>
+                <div>
+                    <h3>${item.title}</h3>
+                    <p class="desc">${item.desc}</p>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
