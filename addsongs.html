@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1000 Songs | Pro Editor</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --card: #111111;
+            --text: #ffffff;
+            --accent: #0066ff;
+            --border: #333333;
+            --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); padding: 20px; line-height: 1.5; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        
+        header { margin-bottom: 30px; border-bottom: 1px solid var(--text); padding-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
+        h1 { font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+
+        .section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 25px; margin-bottom: 20px; }
+        .label { font-size: 0.7rem; text-transform: uppercase; color: #888; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+
+        textarea { 
+            width: 100%; height: 200px; padding: 15px; border: 1px solid var(--border); 
+            border-radius: 4px; font-family: monospace; font-size: 0.8rem;
+            background: #050505; color: var(--accent); resize: vertical;
+        }
+
+        button {
+            background: var(--text); color: var(--bg); border: none; padding: 12px 24px;
+            border-radius: 4px; font-weight: 900; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 1px; font-size: 0.8rem; transition: all 0.2s;
+        }
+        button:hover { background: var(--accent); color: white; }
+        button.secondary { background: transparent; color: #888; border: 1px solid #333; margin-left: 10px; }
+
+        .table-wrap { overflow: auto; border: 1px solid var(--border); margin-top: 15px; max-height: 600px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        thead { position: sticky; top: 0; background: #111; z-index: 5; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: #888; }
+        td { padding: 4px; border-bottom: 1px solid var(--border); }
+        
+        input { width: 100%; padding: 8px; border: 1px solid transparent; background: transparent; color: white; font-size: 0.9rem; }
+        input:focus { background: #1a1a1a; outline: none; border-bottom: 1px solid var(--accent); }
+        
+        .row-delete { color: #ff4444; cursor: pointer; text-align: center; font-size: 1.2rem; padding: 0 10px; }
+        .add-row { border: 1px dashed var(--border); text-align: center; padding: 15px; color: var(--accent); cursor: pointer; font-weight: bold; margin-top: 10px; border-radius: 4px; }
+        .add-row:hover { background: #001133; }
+
+        #msg { position: fixed; top: 20px; right: 20px; padding: 12px 25px; background: var(--accent); color: white; border-radius: 4px; font-weight: bold; display: none; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<div id="msg"></div>
+
+<div class="container">
+    <header>
+        <h1>Song Data Editor</h1>
+        <span style="color: #666; font-size: 0.7rem;">Surgical Extraction Engine v4.0</span>
+    </header>
+
+    <div id="view-import">
+        <div class="section">
+            <span class="label">Step 1: Paste Entire File Code</span>
+            <textarea id="input-source" placeholder="Open 1000Songs (2).html, Copy All, and Paste it here..."></textarea>
+            <button onclick="processSource()">Extract Database</button>
+        </div>
+    </div>
+
+    <div id="view-editor" style="display:none;">
+        <div class="section">
+            <span class="label">Step 2: Edit Existing Songs (Including Beatles)</span>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="80">Year</th>
+                            <th>Artist</th>
+                            <th>Track Name</th>
+                            <th>Genre</th>
+                            <th>Notes</th>
+                            <th width="40"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="editor-body"></tbody>
+                </table>
+            </div>
+            <div class="add-row" onclick="addNewRow()">+ Add New Track</div>
+        </div>
+
+        <div style="padding-bottom: 100px;">
+            <button onclick="compileCode()">Generate Final Code</button>
+            <button class="secondary" onclick="location.reload()">Reset</button>
+        </div>
+    </div>
+
+    <div id="view-export" style="display:none;">
+        <div class="section">
+            <span class="label">Step 3: Copy and Save</span>
+            <textarea id="output-source" readonly></textarea>
+            <button onclick="copyResult()">Copy to Clipboard</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let fileHeader = "";
+    let fileFooter = "";
+    let songDatabase = {};
+    let varType = "const";
+    let varName = "songData";
+
+    function showMsg(t) {
+        const m = document.getElementById('msg');
+        m.innerText = t; m.style.display = 'block';
+        setTimeout(() => m.style.display = 'none', 3000);
+    }
+
+    function processSource() {
+        const src = document.getElementById('input-source').value;
+        const pattern = /(const|let|var)\s+([a-zA-Z0-9_$]+)\s*=\s*\{/;
+        const match = src.match(pattern);
+
+        if (!match) {
+            showMsg("Could not find the song data variable!");
+            return;
+        }
+
+        varType = match[1];
+        varName = match[2];
+        const startPos = src.indexOf(match[0]);
+        const objectStart = src.indexOf('{', startPos);
+
+        // Brace tracking for deep objects
+        let depth = 0;
+        let objectEnd = -1;
+        for (let i = objectStart; i < src.length; i++) {
+            if (src[i] === '{') depth++;
+            if (src[i] === '}') depth--;
+            if (depth === 0) {
+                objectEnd = i + 1;
+                break;
+            }
+        }
+
+        if (objectEnd === -1) {
+            showMsg("Object parsing failed (unbalanced braces).");
+            return;
+        }
+
+        try {
+            const rawObject = src.substring(objectStart, objectEnd);
+            // Safe evaluation of the JS object
+            songDatabase = new Function(`return ${rawObject}`)();
+            
+            fileHeader = src.substring(0, startPos);
+            let suffixStart = objectEnd;
+            if (src[suffixStart] === ';') suffixStart++;
+            fileFooter = src.substring(suffixStart);
+
+            renderRows();
+            document.getElementById('view-import').style.display = 'none';
+            document.getElementById('view-editor').style.display = 'block';
+            showMsg("Loaded " + Object.keys(songDatabase).length + " years of tracks!");
+        } catch (e) {
+            console.error(e);
+            showMsg("Failed to interpret song data.");
+        }
+    }
+
+    function renderRows() {
+        const body = document.getElementById('editor-body');
+        body.innerHTML = '';
+        
+        // Sort years descending
+        const years = Object.keys(songDatabase).sort((a,b) => b - a);
+        years.forEach(year => {
+            songDatabase[year].forEach(track => {
+                body.appendChild(createRow(year, track));
+            });
+        });
+    }
+
+    function createRow(year, data) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="number" class="in-year" value="${year}"></td>
+            <td><input type="text" class="in-artist" value="${(data.artist || '').replace(/"/g, '&quot;')}"></td>
+            <td><input type="text" class="in-track" value="${(data.track || '').replace(/"/g, '&quot;')}"></td>
+            <td><input type="text" class="in-genre" value="${(data.genre || '').replace(/"/g, '&quot;')}"></td>
+            <td><input type="text" class="in-note" value="${(data.note || '').replace(/"/g, '&quot;')}"></td>
+            <td class="row-delete" onclick="this.closest('tr').remove()">×</td>
+        `;
+        return tr;
+    }
+
+    function addNewRow() {
+        const body = document.getElementById('editor-body');
+        const row = createRow(new Date().getFullYear(), {artist:'', track:'', genre:'', note:''});
+        body.prepend(row);
+        row.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function compileCode() {
+        const rows = document.querySelectorAll('#editor-body tr');
+        const newDb = {};
+
+        rows.forEach(tr => {
+            const y = tr.querySelector('.in-year').value;
+            if(!y) return;
+            if(!newDb[y]) newDb[y] = [];
+            newDb[y].push({
+                artist: tr.querySelector('.in-artist').value,
+                track: tr.querySelector('.in-track').value,
+                genre: tr.querySelector('.in-genre').value,
+                note: tr.querySelector('.in-note').value
+            });
+        });
+
+        const newVar = `${varType} ${varName} = ${JSON.stringify(newDb, null, 4)};`;
+        document.getElementById('output-source').value = fileHeader + newVar + fileFooter;
+        document.getElementById('view-export').style.display = 'block';
+        document.getElementById('view-export').scrollIntoView({ behavior: 'smooth' });
+        showMsg("Updated code is ready!");
+    }
+
+    function copyResult() {
+        const area = document.getElementById('output-source');
+        area.select();
+        document.execCommand('copy');
+        showMsg("Copied to clipboard!");
+    }
+</script>
+
+</body>
+</html>
