@@ -1722,7 +1722,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         if(artistQ) query += ` AND artist:"${artistQ}"`;
 
         try {
-            const res = await fetch(`https://musicbrainz.org/ws/2/recording?query=${encodeURIComponent(query)}&limit=70&fmt=json`);
+            const res = await fetch(`https://musicbrainz.org/ws/2/recording?query=${encodeURIComponent(query)}&limit=1000&fmt=json`);
             const data = await res.json();
             let tracks = data.recordings || [];
 
