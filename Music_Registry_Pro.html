@@ -773,7 +773,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 <option value="blues">Blues</option>
         </select>
         <input type="text" id="artist-search" placeholder="Artist filter...">
-        <label class="toggle-container"><input type="checkbox" id="unique-toggle" checked=""> Unique Artist</label>
+       <input type="text" id="song-search" placeholder="Search Song Title...">
+            <label class="toggle-container"><input type="checkbox" id="unique-toggle" checked=""> Unique Artist</label>
         <label class="toggle-container"><input type="checkbox" id="audio-toggle"> Previews</label>
         <button class="btn btn-primary" onclick="runEngine()">Execute Quest</button>
     </div>
@@ -1705,7 +1706,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const unique = document.getElementById('unique-toggle').checked;
         const showAudio = document.getElementById('audio-toggle').checked;
         const loader = document.getElementById('loading');
-        
+        const songQ = document.getElementById('song-search').value;
         loader.style.display = 'block';
         document.getElementById('songs-container').innerHTML = '';
 
