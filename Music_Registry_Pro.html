@@ -1740,7 +1740,7 @@ if(songQ) query += ` AND song:"${songQ}"`;
                 });
             }
 
-            const results = await Promise.all(tracks.slice(0, 30).map(async t => {
+            const results = await Promise.all(tracks.slice(0, 50).map(async t => {
                 const artistName = t['artist-credit']?.[0]?.name;
                 const verification = await verifyArtistData(artistName);
                 
@@ -1749,7 +1749,7 @@ if(songQ) query += ` AND song:"${songQ}"`;
                     const relYear = parseInt(t['first-release-date'].split('-')[0]);
                     const incYear = parseInt(verification.inception);
                     const gap = relYear - incYear;
-                    if(gap <= 3 && gap >= -1) eraBadge = "Prime Era";
+                    if(gap <= 3 && gap >= -10) eraBadge = "Prime Era";
                     else if(gap >= 12) eraBadge = "Legacy";
                 }
 
