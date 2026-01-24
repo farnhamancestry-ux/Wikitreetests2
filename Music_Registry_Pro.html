@@ -1723,7 +1723,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
         if(genre !== 'all') query += ` AND ${genreMaps[genre] || `tag:"${genre}"`}`;
         if(artistQ) query += ` AND artist:"${artistQ}"`;
-
+if(songQ) query += ` AND song:"${songQ}"`;
+            
         try {
             const res = await fetch(`https://musicbrainz.org/ws/2/recording?query=${encodeURIComponent(query)}&limit=1000&fmt=json`);
             const data = await res.json();
