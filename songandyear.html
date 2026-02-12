@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WD Music Curator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #fff; color: #000; }
+        input::placeholder { color: rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        const App = () => {
+            const [query, setQuery] = useState('');
+            const [artistFilter, setArtistFilter] = useState('');
+            const [results, setResults] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [status, setStatus] = useState('READY');
+
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            });
+
+            const executeSearch = async () => {
+                if (!query.trim()) return;
+                setLoading(true);
+                setStatus('SEARCHING...');
+                
+                try {
+                    const searchUrl = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=en&format=json&origin=*&type=item`;
+                    const response = await fetch(searchUrl);
+                    const searchData = await response.json();
+
+                    if (!searchData.search || searchData.search.length === 0) {
+                        setResults([]);
+                        setStatus('NO RESULTS');
+                        setLoading(false);
+                        return;
+                    }
+
+                    const entityIds = searchData.search.map(item => item.id).join('|');
+                    const detailsUrl = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${entityIds}&languages=en&format=json&origin=*&props=claims|labels|descriptions|sitelinks`;
+                    const detailsResponse = await fetch(detailsUrl);
+                    const detailsData = await detailsResponse.json();
+
+                    const processedResults = await Promise.all(searchData.search.map(async (item) => {
+                        const entity = detailsData.entities[item.id];
+                        const claims = entity.claims || {};
+                        const sitelinks = entity.sitelinks || {};
+                        
+                        let rawYear = 9999;
+                        let displayYear = "N/A";
+
+                        if (claims.P577) {
+                            try {
+                                const dateStr = claims.P577[0].mainsnak.datavalue.value.time;
+                                const match = dateStr.match(/\d{4}/);
+                                if (match) {
+                                    rawYear = parseInt(match[0]);
+                                    displayYear = match[0];
+                                }
+                            } catch(e) {}
+                        }
+
+                        let artistName = "UNKNOWN ARTIST";
+                        if (claims.P175) {
+                            try {
+                                const artistId = claims.P175[0].mainsnak.datavalue.value.id;
+                                const artistRes = await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${artistId}&props=labels&languages=en&format=json&origin=*`);
+                                const artistData = await artistRes.json();
+                                artistName = artistData.entities[artistId].labels.en.value;
+                            } catch(e) {}
+                        }
+
+                        return {
+                            id: item.id,
+                            title: item.label || "UNTITLED",
+                            year: displayYear,
+                            sortYear: rawYear,
+                            artistName: artistName.toUpperCase(),
+                            wikipedia: sitelinks.enwiki ? `https://en.wikipedia.org/wiki/${encodeURIComponent(sitelinks.enwiki.title)}` : null
+                        };
+                    }));
+
+                    // SORT BY YEAR ASCENDING (EARLIEST FIRST)
+                    const sorted = processedResults.sort((a, b) => a.sortYear - b.sortYear);
+
+                    setResults(sorted);
+                    setStatus(`COUNT: ${sorted.length}`);
+                } catch (e) {
+                    setStatus('ERROR');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const filteredResults = useMemo(() => {
+                return results.filter(item => 
+                    item.artistName.toLowerCase().includes(artistFilter.toLowerCase())
+                );
+            }, [results, artistFilter]);
+
+            return (
+                <div className="min-h-screen">
+                    <header className="p-3 border-b border-black flex justify-between items-center sticky top-0 bg-white z-20">
+                        <h1 className="text-[10px] font-black uppercase tracking-[0.3em]">Chronological Pub Index</h1>
+                        <span className="text-[9px] font-bold opacity-40">{status}</span>
+                    </header>
+
+                    <main className="p-4 md:p-6 max-w-xl mx-auto">
+                        <div className="mb-6 space-y-2">
+                            <div className="flex flex-col">
+                                <span className="text-[8px] font-black uppercase tracking-widest mb-1 opacity-40">Search Song</span>
+                                <input 
+                                    className="w-full border border-black p-2 text-sm font-bold uppercase outline-none focus:bg-zinc-50"
+                                    value={query}
+                                    onChange={e => setQuery(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && executeSearch()}
+                                    placeholder="YESTERDAY"
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[8px] font-black uppercase tracking-widest mb-1 opacity-40">Filter Artist</span>
+                                <input 
+                                    className="w-full border border-black p-2 text-sm font-bold uppercase outline-none focus:bg-zinc-50"
+                                    value={artistFilter}
+                                    onChange={e => setArtistFilter(e.target.value)}
+                                    placeholder="BEATLES"
+                                />
+                            </div>
+                            <button 
+                                onClick={executeSearch}
+                                className="w-full bg-black text-white py-3 text-[10px] font-black uppercase tracking-[0.4em] hover:bg-zinc-800 transition-colors"
+                            >
+                                {loading ? 'FETCHING...' : 'UPDATE'}
+                            </button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {filteredResults.map(item => (
+                                <div key={item.id} className="border-b border-black/5 pb-3 flex justify-between items-start">
+                                    <div className="flex-1 pr-4">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-[10px] font-black uppercase tracking-tighter">{item.title}</span>
+                                            <span className="text-[8px] font-bold opacity-30 italic">{item.id}</span>
+                                        </div>
+                                        <p className="text-[9px] font-bold opacity-50 uppercase tracking-widest mb-2 leading-none">{item.artistName}</p>
+                                        
+                                        <div className="flex gap-3">
+                                            <a href={`https://www.wikidata.org/wiki/${item.id}`} target="_blank" className="text-[8px] font-black uppercase tracking-widest opacity-30 hover:opacity-100 flex items-center gap-1">
+                                                <i data-lucide="database" size="8"></i> WD
+                                            </a>
+                                            {item.wikipedia && (
+                                                <a href={item.wikipedia} target="_blank" className="text-[8px] font-black uppercase tracking-widest opacity-30 hover:opacity-100 flex items-center gap-1">
+                                                    <i data-lucide="book-open" size="8"></i> WP
+                                                </a>
+                                            )}
+                                            <a href={`https://www.google.com/search?q=${encodeURIComponent(item.title + ' ' + item.artistName + ' release date')}`} target="_blank" className="text-[8px] font-black uppercase tracking-widest opacity-30 hover:opacity-100 flex items-center gap-1">
+                                                <i data-lucide="search" size="8"></i> GOOG
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div className="text-2xl font-black italic tracking-tighter border-l border-black/5 pl-4 leading-none min-w-[60px] text-right">
+                                        {item.year}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
