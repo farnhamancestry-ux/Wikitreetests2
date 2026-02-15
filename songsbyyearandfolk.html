@@ -1,0 +1,2413 @@
+<html lang="en"><head><script>(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjI2NmM5YTIxZDM4NGQzZmU0OGMyZjNhYjNiZmE1NjQ0Yzk0ZmY3Y2UiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxODEwMTQ0NjgwMzQ0MDk3MDg5NSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzEwNjlkM2Y0NzBjMjM5N2VfYXJjaGl2ZV90b29sLmh0bWwtNzE2In0sImV4cCI6MTc2OTAzOTc0NCwiaWF0IjoxNzY5MDM2MTQ0LCJhbGciOiJSUzI1NiJ9.XCpDQnHP9vWp0f_kR3GeMYECaaX8gkwCVE_zliQ--3RC7sAnLy_8HHy0WV-Y6PaDR4hXjauhsL9TBrxhjyYtsp4BFxytd6SdcdP3iWJqyTG-U173iVg4SRHhpw3PZyQhYhjRT9MTzHGZO22IOtT2btxHG5BcY6OQYjSZ7pufs9Vw6y4zpU4ohSMCgp9o6IXEMRsP1NErX1ZrYrVFYdcR3R0qEIRuWFgWxmPuRUslGF06qq_E0Qe7KcG41LD5yM7qG0WzZBWBi1tWu9GpVkDkFz7t2auxYo26Kc5NVOKeH6ztg4x5Frp-3HB6WeRnh85O9dkeuK5kTJBCPyrVBOyLDw","c_1069d3f470c2397e_archive_tool.html-716")</script><script>'use strict';var h=typeof Object.defineProperties=="function"?Object.defineProperty:function(a,b,d){if(a==Array.prototype||a==Object.prototype)return a;a[b]=d.value;return a};function l(a){a=["object"==typeof globalThis&&globalThis,a,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var b=0;b<a.length;++b){var d=a[b];if(d&&d.Math==Math)return d}throw Error("Cannot find global object");}var n=l(this);
+function p(a,b){if(b)a:{var d=n;a=a.split(".");for(var c=0;c<a.length-1;c++){var e=a[c];if(!(e in d))break a;d=d[e]}a=a[a.length-1];c=d[a];b=b(c);b!=c&&b!=null&&h(d,a,{configurable:!0,writable:!0,value:b})}}function r(a){function b(c){return a.next(c)}function d(c){return a.throw(c)}return new Promise(function(c,e){function f(g){g.done?c(g.value):Promise.resolve(g.value).then(b,d).then(f,e)}f(a.next())})}function t(a){return r(a())}
+p("Object.values",function(a){return a?a:function(b){var d=[],c;for(c in b)Object.prototype.hasOwnProperty.call(b,c)&&d.push(b[c]);return d}});p("Array.prototype.includes",function(a){return a?a:function(b,d){var c=this;c instanceof String&&(c=String(c));var e=c.length;d=d||0;for(d<0&&(d=Math.max(d+e,0));d<e;d++){var f=c[d];if(f===b||Object.is(f,b))return!0}return!1}});/*
+
+ MIT License
+
+ Copyright (c) 2017-2023 W.Y.
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+*/
+function u(a,b){const d=a.style;b.backgroundColor&&(d.backgroundColor=b.backgroundColor);b.width&&(d.width=`${b.width}px`);b.height&&(d.height=`${b.height}px`);const c=b.style;c!=null&&Object.keys(c).forEach(e=>{d[e]=c[e]})};var v=(()=>{let a=0;return()=>{a+=1;return`u${`0000${(Math.random()*1679616<<0).toString(36)}`.slice(-4)}${a}`}})();function w(a){const b=[];for(let d=0,c=a.length;d<c;d++)b.push(a[d]);return b}let x=null;function y(a={}){return x?x:a.l?x=a.l:x=w(window.getComputedStyle(document.documentElement))}function z(a,b){return(a=(a.ownerDocument.defaultView||window).getComputedStyle(a).getPropertyValue(b))?parseFloat(a.replace("px","")):0}
+function A(a,b={}){var d;if(!(d=b.width)){d=z(a,"border-left-width");var c=z(a,"border-right-width");d=a.clientWidth+d+c}(b=b.height)||(b=z(a,"border-top-width"),c=z(a,"border-bottom-width"),b=a.clientHeight+b+c);return{width:d,height:b}}function B(a){return new Promise((b,d)=>{const c=new Image;c.onload=()=>{c.decode().then(()=>{requestAnimationFrame(()=>b(c))})};c.onerror=d;c.crossOrigin="anonymous";c.decoding="async";c.src=a})}
+function C(a){return t(function*(){return Promise.resolve().then(()=>(new XMLSerializer).serializeToString(a)).then(encodeURIComponent).then(b=>`data:image/svg+xml;charset=utf-8,${b}`)})}
+function D(a,b,d){return t(function*(){const c=document.createElementNS("http://www.w3.org/2000/svg","svg"),e=document.createElementNS("http://www.w3.org/2000/svg","foreignObject");c.setAttribute("width",`${b}`);c.setAttribute("height",`${d}`);c.setAttribute("viewBox",`0 0 ${b} ${d}`);e.setAttribute("width","100%");e.setAttribute("height","100%");e.setAttribute("x","0");e.setAttribute("y","0");e.setAttribute("externalResourcesRequired","true");c.appendChild(e);e.appendChild(a);return C(c)})}
+var E=(a,b)=>{if(a instanceof b)return!0;a=Object.getPrototypeOf(a);return a===null?!1:a.constructor.name===b.name||E(a,b)};function F(a,b){return y(b).map(d=>{const c=a.getPropertyValue(d),e=a.getPropertyPriority(d);return`${d}: ${c}${e?" !important":""};`}).join(" ")}
+function G(a,b,d,c){a=window.getComputedStyle(a,d);var e=a.getPropertyValue("content");if(e!==""&&e!=="none"){var f=v();try{b.className=`${b.className} ${f}`}catch(k){return}e=document.createElement("style");var g=e.appendChild;d=`.${f}:${d}`;a.cssText?(c=a.getPropertyValue("content"),c=`${a.cssText} content: '${c.replace(/'|"/g,"")}';`):c=F(a,c);g.call(e,document.createTextNode(`${d}{${c}}`));b.appendChild(e)}};function H(a){return a.search(/^(data:)/)!==-1}function I(a,b,d){return t(function*(){const c=yield fetch(a,b);if(c.status===404)throw Error(`Resource "${c.url}" not found`);const e=yield c.blob();return new Promise((f,g)=>{const k=new FileReader;k.onerror=g;k.onloadend=()=>{try{f(d({o:c,result:k.result}))}catch(m){g(m)}};k.readAsDataURL(e)})})}const J={};function K(a,b,d){let c=a.replace(/\?.*/,"");d&&(c=a);/ttf|otf|eot|woff2?/i.test(c)&&(c=c.replace(/.*\//,""));return b?`[${b}]${c}`:c}
+function L(a,b,d){return t(function*(){const c=K(a,b,d.C);if(J[c]!=null)return J[c];d.u&&(a+=(/\?/.test(a)?"&":"?")+(new Date).getTime());let e;try{const f=yield I(a,d.i,({o:g,result:k})=>{b||(b=g.headers.get("Content-Type")||"");return k.split(/,/)[1]});e=`data:${b};base64,${f}`}catch(f){e=d.B||""}return J[c]=e})};const M={P:"application/font-woff",R:"application/font-woff",N:"application/font-truetype",v:"application/vnd.ms-fontobject",H:"image/png",F:"image/jpeg",D:"image/jpeg",A:"image/gif",M:"image/tiff",L:"image/svg+xml",O:"image/webp"};function N(a){return(a=/\.([^./]*?)$/g.exec(a))?a[1]:""};function O(a){return t(function*(){const b=a.toDataURL();return b==="data:,"?a.cloneNode(!1):B(b)})}function aa(a,b){return t(function*(){if(a.currentSrc){var d=document.createElement("canvas");const c=d.getContext("2d");d.width=a.clientWidth;d.height=a.clientHeight;c==null||c.drawImage(a,0,0,d.width,d.height);d=d.toDataURL();return B(d)}d=a.poster;d=yield L(d,M[N(d).toLowerCase()]||"",b);return B(d)})}
+function ba(a,b){return t(function*(){try{let d;if(a==null?0:(d=a.contentDocument)==null?0:d.body)return yield P(a.contentDocument.body,b,!0)}catch(d){}return a.cloneNode(!1)})}function ca(a,b){return t(function*(){return E(a,HTMLCanvasElement)?O(a):E(a,HTMLVideoElement)?aa(a,b):E(a,HTMLIFrameElement)?ba(a,b):a.cloneNode(a.tagName!=null&&a.tagName.toUpperCase()==="SVG")})}
+function da(a,b,d){return t(function*(){if(b.tagName!=null&&b.tagName.toUpperCase()==="SVG")return b;let c=[];if(a.tagName!=null&&a.tagName.toUpperCase()==="SLOT"&&a.assignedNodes)c=w(a.assignedNodes());else{let e;if(E(a,HTMLIFrameElement)&&((e=a.contentDocument)==null?0:e.body))c=w(a.contentDocument.body.childNodes);else{let f;c=w(((f=a.shadowRoot)!=null?f:a).childNodes)}}if(c.length===0||E(a,HTMLVideoElement))return b;yield c.reduce((e,f)=>e.then(()=>P(f,d)).then(g=>{g&&b.appendChild(g)}),Promise.resolve());
+return b})}function ea(a,b,d){const c=b.style;if(c){var e=window.getComputedStyle(a);e.cssText?(c.cssText=e.cssText,c.transformOrigin=e.transformOrigin):y(d).forEach(f=>{let g=e.getPropertyValue(f);f==="font-size"&&g.endsWith("px")&&(g=`${Math.floor(parseFloat(g.substring(0,g.length-2)))-.1}px`);E(a,HTMLIFrameElement)&&f==="display"&&g==="inline"&&(g="block");f==="d"&&b.getAttribute("d")&&(g=`path(${b.getAttribute("d")})`);c.setProperty(f,g,e.getPropertyPriority(f))})}}
+function fa(a,b){E(a,HTMLSelectElement)&&(b=Array.from(b.children).find(d=>a.value===d.getAttribute("value")))&&b.setAttribute("selected","")}
+function ha(a,b){return t(function*(){var d=a.querySelectorAll?a.querySelectorAll("use"):[];if(d.length===0)return a;var c={};for(var e=0;e<d.length;e++){var f=d[e].getAttribute("xlink:href");if(f){const g=document.querySelector(f);a.querySelector(f)||!g||c[f]||(c[f]=yield P(g,b,!0))}}d=Object.values(c);if(d.length){c=document.createElementNS("http://www.w3.org/1999/xhtml","svg");c.setAttribute("xmlns","http://www.w3.org/1999/xhtml");c.style.position="absolute";c.style.width="0";c.style.height="0";
+c.style.overflow="hidden";c.style.display="none";e=document.createElementNS("http://www.w3.org/1999/xhtml","defs");c.appendChild(e);for(f=0;f<d.length;f++)e.appendChild(d[f]);a.appendChild(c)}return a})}
+function P(a,b,d){return t(function*(){return d||!b.filter||b.filter(a)?Promise.resolve(a).then(c=>ca(c,b)).then(c=>da(a,c,b)).then(c=>{E(c,Element)&&(ea(a,c,b),G(a,c,":before",b),G(a,c,":after",b),E(a,HTMLTextAreaElement)&&(c.textContent=a.value),E(a,HTMLInputElement)&&c.setAttribute("value",a.value),fa(a,c));return c}).then(c=>ha(c,b)):null})};const Q=/url\((['"]?)([^'"]+?)\1\)/g,ia=/url\([^)]+\)\s*format\((["']?)([^"']+)\1\)/g,ja=/src:\s*(?:url\([^)]+\)\s*format\([^)]+\)[,;]\s*)+/g;function ka(a){const b=[];a.replace(Q,(d,c,e)=>{b.push(e);return d});return b.filter(d=>!H(d))}
+function la(a,b,d,c){return t(function*(){try{const e=d?(new URL(b,d||void 0)).toString():b;let f;f=yield L(e,M[N(b).toLowerCase()]||"",c);return a.replace(new RegExp(`(url\\(['"]?)(${b.replace(/([.*+?^${}()|\[\]\/\\])/g,"\\$1")})(['"]?\\))`,"g"),`$1${f}$3`)}catch(e){}return a})}function ma(a,{I:b}){return b?a.replace(ja,d=>{for(;;){const [c,,e]=ia.exec(d)||[],f=c,g=e;if(!g)return"";if(g===b)return`src: ${f};`}}):a}
+function R(a,b,d){return t(function*(){if(a.search(Q)===-1)return a;const c=ma(a,d);return ka(c).reduce((e,f)=>e.then(g=>la(g,f,b,d)),Promise.resolve(c))})};function S(a,b,d){return t(function*(){var c;const e=(c=b.style)==null?void 0:c.getPropertyValue(a);return e?(c=yield R(e,null,d),b.style.setProperty(a,c,b.style.getPropertyPriority(a)),!0):!1})}function na(a,b){return t(function*(){(yield S("background",a,b))||(yield S("background-image",a,b));(yield S("mask",a,b))||(yield S("-webkit-mask",a,b))||(yield S("mask-image",a,b))||(yield S("-webkit-mask-image",a,b))})}
+function oa(a,b){return t(function*(){const d=E(a,HTMLImageElement);if(d&&!H(a.src)||E(a,SVGImageElement)&&!H(a.href.baseVal)){var c=d?a.src:a.href.baseVal,e=yield L(c,M[N(c).toLowerCase()]||"",b);yield new Promise((f,g)=>{a.onload=f;a.onerror=b.m?(...k)=>{try{f(b.m(...k))}catch(m){g(m)}}:g;a.decode&&(a.decode=f);a.loading==="lazy"&&(a.loading="eager");d?(a.srcset="",a.src=e):a.href.baseVal=e})}})}
+function pa(a,b){return t(function*(){const d=w(a.childNodes).map(c=>T(c,b));yield Promise.all(d).then(()=>a)})}function T(a,b){return t(function*(){E(a,Element)&&(yield na(a,b),yield oa(a,b),yield pa(a,b))})};const U={};function V(a){return t(function*(){var b=U[a];if(b!=null)return b;b=yield(yield fetch(a)).text();b={url:a,cssText:b};return U[a]=b})}function W(a,b){return t(function*(){let d=a.cssText;const c=/url\(["']?([^"')]+)["']?\)/g,e=(d.match(/url\([^)]+\)/g)||[]).map(f=>t(function*(){let g=f.replace(c,"$1");g.startsWith("https://")||(g=(new URL(g,a.url)).href);return I(g,b.i,({result:k})=>{d=d.replace(f,`url(${k})`);return[f,k]})}));return Promise.all(e).then(()=>d)})}
+function X(a){if(a==null)return[];const b=[];a=a.replace(/(\/\*[\s\S]*?\*\/)/gi,"");for(var d=RegExp("((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})","gi");;){var c=d.exec(a);if(c===null)break;b.push(c[0])}a=a.replace(d,"");d=/@import[\s\S]*?url\([^)]*\)[\s\S]*?;/gi;for(c=RegExp("((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})","gi");;){let e=d.exec(a);if(e===null)if(e=c.exec(a),e===null)break;else d.lastIndex=c.lastIndex;else c.lastIndex=
+d.lastIndex;b.push(e[0])}return b}
+function qa(a,b){return t(function*(){const d=[],c=[];a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach((f,g)=>{if(f.type===CSSRule.IMPORT_RULE){let k=g+1;f=V(f.href).then(m=>W(m,b)).then(m=>X(m).forEach(q=>{try{e.insertRule(q,q.startsWith("@import")?k+=1:e.cssRules.length)}catch(Da){}})).catch(()=>{});c.push(f)}})}catch(f){const g=a.find(k=>k.href==null)||document.styleSheets[0];e.href!=null&&c.push(V(e.href).then(k=>W(k,b)).then(k=>X(k).forEach(m=>{g.insertRule(m,g.cssRules.length)})).catch(()=>
+{}))}});return Promise.all(c).then(()=>{a.forEach(e=>{if("cssRules"in e)try{w(e.cssRules||[]).forEach(f=>{d.push(f)})}catch(f){}});return d})})}function ra(a){return a.filter(b=>b.type===CSSRule.FONT_FACE_RULE).filter(b=>b.style.getPropertyValue("src").search(Q)!==-1)}function sa(a,b){return t(function*(){if(a.ownerDocument==null)throw Error("Provided element is not within a Document");var d=w(a.ownerDocument.styleSheets);d=yield qa(d,b);return ra(d)})}
+function ta(a){function b(c){(c.style.fontFamily||getComputedStyle(c).fontFamily).split(",").forEach(e=>{d.add(e.trim().replace(/["']/g,""))});Array.from(c.children).forEach(e=>{e instanceof HTMLElement&&b(e)})}const d=new Set;b(a);return d}function ua(a,b){return t(function*(){const d=yield sa(a,b),c=ta(a);return(yield Promise.all(d.filter(e=>c.has(e.style.fontFamily.trim().replace(/["']/g,""))).map(e=>R(e.cssText,e.parentStyleSheet?e.parentStyleSheet.href:null,b)))).join("\n")})}
+function va(a,b){return t(function*(){const d=b.j!=null?b.j:b.K?null:yield ua(a,b);if(d){const c=document.createElement("style");c.appendChild(document.createTextNode(d));a.firstChild?a.insertBefore(c,a.firstChild):a.appendChild(c)}})};function wa(a,b={}){return t(function*(){const {width:d,height:c}=A(a,b),e=yield P(a,b,!0);yield va(e,b);yield T(e,b);u(e,b);return yield D(e,d,c)})}
+function xa(a,b={}){return t(function*(){const {width:d,height:c}=A(a,b);var e=yield wa(a,b);e=yield B(e);const f=document.createElement("canvas"),g=f.getContext("2d"),k=b.G||window.devicePixelRatio||1,m=b.h||d,q=b.g||c;f.width=m*k;f.height=q*k;!b.J&&(f.width>16384||f.height>16384)&&(f.width>16384&&f.height>16384?f.width>f.height?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=16384):f.width>16384?(f.height*=16384/f.width,f.width=16384):(f.width*=16384/f.height,f.height=
+16384));f.style.width=`${m}`;f.style.height=`${q}`;b.backgroundColor&&(g.fillStyle=b.backgroundColor,g.fillRect(0,0,f.width,f.height));g.drawImage(e,0,0,f.width,f.height);return f})}function ya(a,b={}){return t(function*(){return(yield xa(a,b)).toDataURL()})};const za=["gemini.google.com","corp.google.com","proxy.googlers.com"];function Y(){return document.body.querySelectorAll('[class*="animate"]').length>0}function Z(a){return t(function*(){try{return yield ya(a,{h:a.offsetWidth,g:a.offsetHeight})}catch(d){var b=a.offsetHeight;const c=document.createElement("canvas");c.width=a.offsetWidth;c.height=b;return c.toDataURL("image/png")}})}
+function Aa(){return t(function*(){const a=document.body.offsetWidth,b=document.body.offsetHeight,d=document.body.cloneNode(!0);d.querySelectorAll('[class*="animate"]').forEach(c=>{c.classList.remove(...Array.from(c.classList).filter(e=>e.startsWith("animate")))});d.style.width=`${a}px`;d.style.height=`${b}px`;return d})}
+function Ba(a){return t(function*(){let b=document.body;if(Y()){var d=yield Aa();b=d;document.body.appendChild(d)}d=yield Z(b);Y()&&document.body.removeChild(b);window.parent.postMessage({type:"SEND_SCREENSHOT",image:d,topOffset:document.documentElement.scrollTop},a.origin)})}function Ca(a){return t(function*(){const b={type:"SEND_SCREENSHOT_FOR_DATA_VISUALIZATION",image:yield Z(document.body),topOffset:0};window.parent.postMessage(b,a.origin)})}
+window.addEventListener("message",a=>t(function*(){if(za.some(d=>a.origin.includes(d))){var b=a.data;b&&(b.type==="MAKE_SCREENSHOT"&&(yield Ba(a)),b.type==="MAKE_SCREENSHOT_FOR_DATA_VISUALIZATION"&&(yield Ca(a)))}}));
+</script><script>(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script>
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script>((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-2.5-flash-preview-09-2025","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-2.5-flash-image-preview","imageTransformModelName":"gemini-3-pro-image-preview-11-2025","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"]})</script><script>(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive Registry | Musical Verification Pro</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --subtle: #888888;
+            --line: #eeeeee;
+            --accent: #ff3e00; 
+            --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --card-bg: #fdfdfd;
+            --audio-bg: #f0f0f0;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --text: #ffffff;
+            --subtle: #a0a0a0;
+            --line: #222222;
+            --card-bg: #121212;
+            --audio-bg: #1a1a1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.5;
+            -webkit-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 1rem 4rem;
+            border-bottom: 2px solid var(--text);
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 2000;
+        }
+
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .title { font-size: 1.2rem; font-weight: 900; letter-spacing: -0.05em; text-transform: uppercase; }
+
+        .search-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"], select {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--line);
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .btn {
+            background: none;
+            border: 1px solid var(--line);
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 8px 14px;
+            color: var(--text);
+            border-radius: 4px;
+        }
+        .btn:hover { border-color: var(--text); background: var(--line); }
+        .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+        main { padding: 0 4rem 10rem 4rem; }
+
+        .year-row {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            position: relative;
+        }
+
+        .year-heading {
+            position: sticky;
+            top: 140px;
+            height: fit-content;
+            padding-top: 3rem;
+            z-index: 10;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
+            transform-origin: left top;
+        }
+        
+        .year-heading h2 { 
+            font-size: 5rem; 
+            font-weight: 900; 
+            letter-spacing: -0.05em;
+            line-height: 1;
+        }
+
+        .minimized h2 { 
+            transform: scale(0.3) translateY(-40px);
+            opacity: 0.3;
+        }
+
+        .year-content { 
+            padding: 3rem 0 6rem 3rem; 
+            max-width: 900px; 
+            border-left: 1px solid var(--line); 
+        }
+        
+        .song-entry { 
+            display: flex; 
+            gap: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .song-details { flex-grow: 1; }
+        .song-title { font-size: 1.5rem; font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em; }
+        
+        .badge {
+            font-size: 0.6rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-right: 6px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .badge-inception { background: var(--text); color: var(--bg); }
+        .badge-wiki { background: var(--accent); color: #fff; }
+        .badge-era { background: #3b82f6; color: white; }
+        .badge-legacy { background: #6b7280; color: white; }
+        .badge-heatmap { background: #10b981; color: white; }
+
+        .artist-bio { font-size: 0.85rem; margin: 0.8rem 0; color: var(--subtle); max-width: 600px; line-height: 1.5; font-style: italic; }
+
+        .metadata {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--line);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+        .metadata b { color: var(--text); margin-right: 2px; }
+
+        .audio-player {
+            margin-top: 1rem;
+            width: 100%;
+            height: 32px;
+            border-radius: 16px;
+            background: var(--audio-bg);
+        }
+
+        .knowledge-bridge {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        #loading { padding: 10rem 0; text-align: center; font-weight: 900; display: none; font-size: 1.5rem; }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        .fav-checkbox { width: 28px; height: 28px; cursor: pointer; accent-color: var(--accent); margin-top: 5px; }
+
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            main { padding: 0 1rem; }
+            .year-row { grid-template-columns: 1fr; }
+            .year-heading { position: relative; top: 0; padding: 1rem 0; transform: none !important; opacity: 1 !important; }
+            .year-content { border-left: none; padding-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header id="main-header">
+    <div class="header-top">
+        <div class="title">Registry Pro v2.6</div>
+        <div class="actions">
+            <button class="btn" onclick="switchView('browse')">Archive</button>
+            <button class="btn" onclick="switchView('favorites')">Registry (<span id="fav-count">0</span>)</button>
+            <button class="btn" onclick="downloadApp()" style="color:var(--accent)">Clone App</button>
+            <button class="btn" onclick="toggleTheme()">Theme</button>
+        </div>
+    </div>
+    <div class="search-controls">
+        <select id="year-select">
+            <option value="all">-- All Years --</option>
+        <option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option><option value="1954">1954</option><option value="1953">1953</option><option value="1952">1952</option><option value="1951">1951</option><option value="1950">1950</option><option value="1949">1949</option><option value="1948">1948</option><option value="1947">1947</option><option value="1946">1946</option><option value="1945">1945</option><option value="1944">1944</option><option value="1943">1943</option><option value="1942">1942</option><option value="1941">1941</option><option value="1940">1940</option><option value="1939">1939</option><option value="1938">1938</option><option value="1937">1937</option><option value="1936">1936</option><option value="1935">1935</option><option value="1934">1934</option><option value="1933">1933</option><option value="1932">1932</option><option value="1931">1931</option><option value="1930">1930</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option><option value="1954">1954</option><option value="1953">1953</option><option value="1952">1952</option><option value="1951">1951</option><option value="1950">1950</option><option value="1949">1949</option><option value="1948">1948</option><option value="1947">1947</option><option value="1946">1946</option><option value="1945">1945</option><option value="1944">1944</option><option value="1943">1943</option><option value="1942">1942</option><option value="1941">1941</option><option value="1940">1940</option><option value="1939">1939</option><option value="1938">1938</option><option value="1937">1937</option><option value="1936">1936</option><option value="1935">1935</option><option value="1934">1934</option><option value="1933">1933</option><option value="1932">1932</option><option value="1931">1931</option><option value="1930">1930</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option><option value="1954">1954</option><option value="1953">1953</option><option value="1952">1952</option><option value="1951">1951</option><option value="1950">1950</option><option value="1949">1949</option><option value="1948">1948</option><option value="1947">1947</option><option value="1946">1946</option><option value="1945">1945</option><option value="1944">1944</option><option value="1943">1943</option><option value="1942">1942</option><option value="1941">1941</option><option value="1940">1940</option><option value="1939">1939</option><option value="1938">1938</option><option value="1937">1937</option><option value="1936">1936</option><option value="1935">1935</option><option value="1934">1934</option><option value="1933">1933</option><option value="1932">1932</option><option value="1931">1931</option><option value="1930">1930</option></select>
+        <select id="genre-select">
+            <option value="all">-- All Genres --</option>
+            <option value="discovery">Discovery</option>
+            <option value="soul">Classic Soul / Motown</option>
+            <option value="northern-soul">Northern Soul</option>
+            <option value="rnb">R&amp;B / Funk</option>
+            <option value="indie">Indie / Post-Punk</option>
+            <option value="electronic">Electronic / IDM</option>
+<option value="folk">Folk</option>
+                <option value="blues">Blues</option>
+        </select>
+        <input type="text" id="artist-search" placeholder="Artist filter...">
+       <input type="text" id="song-search" placeholder="Search Song Title...">
+            <label class="toggle-container"><input type="checkbox" id="unique-toggle" checked=""> Unique Artist</label>
+        <label class="toggle-container"><input type="checkbox" id="audio-toggle"> Previews</label>
+        <button class="btn btn-primary" onclick="runEngine()">Execute Quest</button>
+    </div>
+</header>
+
+<main>
+    <div id="loading" style="display: none;">SYNCING KNOWLEDGE GRAPHS...</div>
+    <div id="view-browse" class="view-section active">
+        <div id="songs-container"><div class="year-row"><div class="year-heading"><h2>1974</h2></div><div class="year-content"><div class="song-list">
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;91c3fb1f-dcfc-475d-af56-1a201e3b011a&quot;,&quot;title&quot;:&quot;Sehr kosmisch&quot;,&quot;artist&quot;:&quot;Harmonia&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;rock, electronic&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:29,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;German band&quot;,&quot;inception&quot;:&quot;1973&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Harmonia&quot;},&quot;era&quot;:&quot;Prime Era&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Sehr kosmisch</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Harmonia</span>
+                        <span class="badge badge-inception">Est: 1973</span>
+                        <span class="badge badge-era">Prime Era</span>
+                        <span class="badge badge-heatmap">Density: 29%</span>
+                    </div>
+                    <div class="artist-bio">German band</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> rock, electronic</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Harmonia&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Harmonia" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Harmonia" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;8018cf0e-dfae-4733-b003-4c7c3482998d&quot;,&quot;title&quot;:&quot;You’re a Lady&quot;,&quot;artist&quot;:&quot;Telly Savalas&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:54,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American film and television actor and singer (1922–1994)&quot;,&quot;inception&quot;:&quot;1959&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Telly_Savalas&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">You’re a Lady</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Telly Savalas</span>
+                        <span class="badge badge-inception">Est: 1959</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 54%</span>
+                    </div>
+                    <div class="artist-bio">American film and television actor and singer (1922–1994)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Telly%20Savalas&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Telly%20Savalas" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Telly_Savalas" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;e975fc8f-7e6a-471a-b86d-752e1656b246&quot;,&quot;title&quot;:&quot;Bitter Sweet&quot;,&quot;artist&quot;:&quot;Isis&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:34,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American post-metal band&quot;,&quot;inception&quot;:&quot;1997&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Isis&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Bitter Sweet</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Isis</span>
+                        <span class="badge badge-inception">Est: 1997</span>
+                        
+                        <span class="badge badge-heatmap">Density: 34%</span>
+                    </div>
+                    <div class="artist-bio">American post-metal band</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Isis&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Isis" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Isis" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;e8b5b406-41ad-41cd-9ecb-0fc87fdf8f98&quot;,&quot;title&quot;:&quot;Memphis&quot;,&quot;artist&quot;:&quot;Chuck Berry&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:56,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American musician (1926–2017)&quot;,&quot;inception&quot;:&quot;1953&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Chuck_Berry&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Memphis</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Chuck Berry</span>
+                        <span class="badge badge-inception">Est: 1953</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 56%</span>
+                    </div>
+                    <div class="artist-bio">American musician (1926–2017)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Chuck%20Berry&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Chuck%20Berry" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Chuck_Berry" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;7b1966db-38a4-4b6e-917b-b7fdac856272&quot;,&quot;title&quot;:&quot;Adonde tú vayas&quot;,&quot;artist&quot;:&quot;Pájaro Alberto y Conjunto Sacrosaurio&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:25,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Pájaro_Alberto_y_Conjunto_Sacrosaurio&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Adonde tú vayas</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Pájaro Alberto y Conjunto Sacrosaurio</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 25%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=P%C3%A1jaro%20Alberto%20y%20Conjunto%20Sacrosaurio&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=P%C3%A1jaro%20Alberto%20y%20Conjunto%20Sacrosaurio" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Pájaro_Alberto_y_Conjunto_Sacrosaurio" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;c63331e2-20cf-45ab-baf2-c98264000cc7&quot;,&quot;title&quot;:&quot;Concerto for Oboe and Strings in A minor: Piano - Allegro&quot;,&quot;artist&quot;:&quot;Jean‐Claude Malgoire&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:48,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Jean‐Claude_Malgoire&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Concerto for Oboe and Strings in A minor: Piano - Allegro</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Jean‐Claude Malgoire</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 48%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Jean%E2%80%90Claude%20Malgoire&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Jean%E2%80%90Claude%20Malgoire" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Jean‐Claude_Malgoire" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;ca27723a-252f-45ca-8526-78aad1bdedc8&quot;,&quot;title&quot;:&quot;Me and Bobby McGee&quot;,&quot;artist&quot;:&quot;Johnny Cash&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;rock, bluegrass&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:37,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American country singer (1932–2003)&quot;,&quot;inception&quot;:&quot;1954&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Johnny_Cash&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Me and Bobby McGee</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Johnny Cash</span>
+                        <span class="badge badge-inception">Est: 1954</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 37%</span>
+                    </div>
+                    <div class="artist-bio">American country singer (1932–2003)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> rock, bluegrass</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Johnny%20Cash&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Johnny%20Cash" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Johnny_Cash" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;e1bf51be-8f2a-4fc8-a520-ed124ee46230&quot;,&quot;title&quot;:&quot;It's Only Music&quot;,&quot;artist&quot;:&quot;Grace Slick&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:25,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American musician, writer and painter&quot;,&quot;inception&quot;:&quot;1964&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Grace_Slick&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">It's Only Music</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Grace Slick</span>
+                        <span class="badge badge-inception">Est: 1964</span>
+                        
+                        <span class="badge badge-heatmap">Density: 25%</span>
+                    </div>
+                    <div class="artist-bio">American musician, writer and painter</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Grace%20Slick&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Grace%20Slick" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Grace_Slick" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;51064195-2d52-4608-9f59-2c31af0f4609&quot;,&quot;title&quot;:&quot;Endlessly&quot;,&quot;artist&quot;:&quot;Neil Sedaka&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;pop&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:32,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American singer&quot;,&quot;inception&quot;:&quot;1957&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Neil_Sedaka&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Endlessly</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Neil Sedaka</span>
+                        <span class="badge badge-inception">Est: 1957</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 32%</span>
+                    </div>
+                    <div class="artist-bio">American singer</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> pop</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Neil%20Sedaka&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Neil%20Sedaka" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Neil_Sedaka" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;6169a536-e42a-4cb8-9449-31b2b70e36b5&quot;,&quot;title&quot;:&quot;Alta Loma Five Till Nine&quot;,&quot;artist&quot;:&quot;Premiata Forneria Marconi&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:23,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Italian progressive rock band&quot;,&quot;inception&quot;:&quot;1970&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Premiata_Forneria_Marconi&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Alta Loma Five Till Nine</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Premiata Forneria Marconi</span>
+                        <span class="badge badge-inception">Est: 1970</span>
+                        
+                        <span class="badge badge-heatmap">Density: 23%</span>
+                    </div>
+                    <div class="artist-bio">Italian progressive rock band</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Premiata%20Forneria%20Marconi&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Premiata%20Forneria%20Marconi" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Premiata_Forneria_Marconi" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;49dde70a-067a-4973-a23b-fe5c0122fe21&quot;,&quot;title&quot;:&quot;El pueblo unido jamás será vencido&quot;,&quot;artist&quot;:&quot;Inti‐Illimani&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:33,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Inti‐Illimani&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">El pueblo unido jamás será vencido</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Inti‐Illimani</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 33%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Inti%E2%80%90Illimani&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Inti%E2%80%90Illimani" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Inti‐Illimani" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;604f2e2f-71a1-4779-be96-d04523051dbf&quot;,&quot;title&quot;:&quot;Tambo (Me acompaña él)&quot;,&quot;artist&quot;:&quot;Ismael Quintana&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:49,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Puerto Rican singer&quot;,&quot;inception&quot;:&quot;1961&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Ismael_Quintana&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Tambo (Me acompaña él)</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Ismael Quintana</span>
+                        <span class="badge badge-inception">Est: 1961</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 49%</span>
+                    </div>
+                    <div class="artist-bio">Puerto Rican singer</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Ismael%20Quintana&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Ismael%20Quintana" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Ismael_Quintana" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;438b8d38-d387-40f5-85ac-c95dea444a7d&quot;,&quot;title&quot;:&quot;Peineta cubana&quot;,&quot;artist&quot;:&quot;Manolo Sanlúcar&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:40,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Flamenco composer and guitarist (1943–2022)&quot;,&quot;inception&quot;:&quot;1943&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Manolo_Sanlúcar&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Peineta cubana</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Manolo Sanlúcar</span>
+                        <span class="badge badge-inception">Est: 1943</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 40%</span>
+                    </div>
+                    <div class="artist-bio">Flamenco composer and guitarist (1943–2022)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Manolo%20Sanl%C3%BAcar&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Manolo%20Sanl%C3%BAcar" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Manolo_Sanlúcar" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;4450b9b5-6468-4eae-90ff-5fc3f10e2274&quot;,&quot;title&quot;:&quot;You Need Love Love Love&quot;,&quot;artist&quot;:&quot;Alvin Lee&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:48,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;English singer, songwriter, and guitarist (1944–2013)&quot;,&quot;inception&quot;:&quot;1960&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Alvin_Lee&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">You Need Love Love Love</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Alvin Lee</span>
+                        <span class="badge badge-inception">Est: 1960</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 48%</span>
+                    </div>
+                    <div class="artist-bio">English singer, songwriter, and guitarist (1944–2013)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Alvin%20Lee&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Alvin%20Lee" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Alvin_Lee" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;fccd1c94-8ac2-4309-8b88-ad6bd5c6f1a0&quot;,&quot;title&quot;:&quot;In the Old Fashioned Way&quot;,&quot;artist&quot;:&quot;Petula Clark&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:43,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;British singer and actress&quot;,&quot;inception&quot;:&quot;1942&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Petula_Clark&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">In the Old Fashioned Way</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Petula Clark</span>
+                        <span class="badge badge-inception">Est: 1942</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 43%</span>
+                    </div>
+                    <div class="artist-bio">British singer and actress</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Petula%20Clark&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Petula%20Clark" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Petula_Clark" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;2d857708-7eae-4c08-a661-2629633e00c6&quot;,&quot;title&quot;:&quot;Inside Out&quot;,&quot;artist&quot;:&quot;American Gypsy&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:34,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American funk music group&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/American_Gypsy&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Inside Out</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>American Gypsy</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 34%</span>
+                    </div>
+                    <div class="artist-bio">American funk music group</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=American%20Gypsy&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=American%20Gypsy" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/American_Gypsy" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;78825011-35e7-4db3-8141-4b616693df22&quot;,&quot;title&quot;:&quot;Metropolis&quot;,&quot;artist&quot;:&quot;Seventh Wave&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:36,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;UK musical group&quot;,&quot;inception&quot;:&quot;1974&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Seventh_Wave&quot;},&quot;era&quot;:&quot;Prime Era&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Metropolis</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Seventh Wave</span>
+                        <span class="badge badge-inception">Est: 1974</span>
+                        <span class="badge badge-era">Prime Era</span>
+                        <span class="badge badge-heatmap">Density: 36%</span>
+                    </div>
+                    <div class="artist-bio">UK musical group</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Seventh%20Wave&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Seventh%20Wave" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Seventh_Wave" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;777d7d4a-c5b5-4b38-bc82-6046bb44bba3&quot;,&quot;title&quot;:&quot;Você&quot;,&quot;artist&quot;:&quot;Roberto Carlos&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:40,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Brazilian singer-songwriter&quot;,&quot;inception&quot;:&quot;1951&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Roberto_Carlos&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Você</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Roberto Carlos</span>
+                        <span class="badge badge-inception">Est: 1951</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 40%</span>
+                    </div>
+                    <div class="artist-bio">Brazilian singer-songwriter</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Roberto%20Carlos&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Roberto%20Carlos" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Roberto_Carlos" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;67c7fb64-d495-44b1-a30f-b264d298a3a2&quot;,&quot;title&quot;:&quot;Traveller in Time&quot;,&quot;artist&quot;:&quot;Uriah Heep&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:23,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;British hard rock band&quot;,&quot;inception&quot;:&quot;1969&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Uriah_Heep&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Traveller in Time</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Uriah Heep</span>
+                        <span class="badge badge-inception">Est: 1969</span>
+                        
+                        <span class="badge badge-heatmap">Density: 23%</span>
+                    </div>
+                    <div class="artist-bio">British hard rock band</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Uriah%20Heep&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Uriah%20Heep" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Uriah_Heep" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;0427ab3e-f5cd-4fcf-acc4-c50437de5153&quot;,&quot;title&quot;:&quot;For Richard&quot;,&quot;artist&quot;:&quot;Caravan&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:46,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;instrumental track by Duke Ellington and his Famous Orchestra; 1937 studio recording&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Caravan&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">For Richard</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Caravan</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 46%</span>
+                    </div>
+                    <div class="artist-bio">instrumental track by Duke Ellington and his Famous Orchestra; 1937 studio recording</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Caravan&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Caravan" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Caravan" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;0d232700-4096-4103-8e45-124a5975f88a&quot;,&quot;title&quot;:&quot;Fire on the Mountain&quot;,&quot;artist&quot;:&quot;The Stringband&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:51,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/The_Stringband&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Fire on the Mountain</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>The Stringband</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 51%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=The%20Stringband&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=The%20Stringband" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/The_Stringband" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;084c1075-bc70-4450-bd5f-b141ae701e91&quot;,&quot;title&quot;:&quot;Didn't I Tell You&quot;,&quot;artist&quot;:&quot;Freda Payne&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:51,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American singer and actress (born 1942)&quot;,&quot;inception&quot;:&quot;1961&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Freda_Payne&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Didn't I Tell You</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Freda Payne</span>
+                        <span class="badge badge-inception">Est: 1961</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 51%</span>
+                    </div>
+                    <div class="artist-bio">American singer and actress (born 1942)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Freda%20Payne&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Freda%20Payne" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Freda_Payne" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;37d06203-9cc9-472c-a367-803f70e61cca&quot;,&quot;title&quot;:&quot;Gin and Tonix All Round&quot;,&quot;artist&quot;:&quot;Lindisfarne&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:49,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;British folk rock and progressive rock band&quot;,&quot;inception&quot;:&quot;1970&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Lindisfarne&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Gin and Tonix All Round</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Lindisfarne</span>
+                        <span class="badge badge-inception">Est: 1970</span>
+                        
+                        <span class="badge badge-heatmap">Density: 49%</span>
+                    </div>
+                    <div class="artist-bio">British folk rock and progressive rock band</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Lindisfarne&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Lindisfarne" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Lindisfarne" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;c2ac2bb2-3b49-4e19-8ba0-103c40f58380&quot;,&quot;title&quot;:&quot;悲しみの十字路&quot;,&quot;artist&quot;:&quot;フィンガー5&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:44,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Japanese idol group&quot;,&quot;inception&quot;:&quot;1972&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/フィンガー5&quot;},&quot;era&quot;:&quot;Prime Era&quot;})">
+                <div class="song-details">
+                    <div class="song-title">悲しみの十字路</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>フィンガー5</span>
+                        <span class="badge badge-inception">Est: 1972</span>
+                        <span class="badge badge-era">Prime Era</span>
+                        <span class="badge badge-heatmap">Density: 44%</span>
+                    </div>
+                    <div class="artist-bio">Japanese idol group</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=%E3%83%95%E3%82%A3%E3%83%B3%E3%82%AC%E3%83%BC5&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=%E3%83%95%E3%82%A3%E3%83%B3%E3%82%AC%E3%83%BC5" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/フィンガー5" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;5fd9ac53-7336-469e-8092-d4c170cffd51&quot;,&quot;title&quot;:&quot;上級生&quot;,&quot;artist&quot;:&quot;Finger 5&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:42,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Japanese idol group&quot;,&quot;inception&quot;:&quot;1972&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Finger_5&quot;},&quot;era&quot;:&quot;Prime Era&quot;})">
+                <div class="song-details">
+                    <div class="song-title">上級生</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Finger 5</span>
+                        <span class="badge badge-inception">Est: 1972</span>
+                        <span class="badge badge-era">Prime Era</span>
+                        <span class="badge badge-heatmap">Density: 42%</span>
+                    </div>
+                    <div class="artist-bio">Japanese idol group</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Finger%205&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Finger%205" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Finger_5" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;c118080f-aed2-47d7-adc8-c00b1bb8a341&quot;,&quot;title&quot;:&quot;Maries efterår&quot;,&quot;artist&quot;:&quot;Niels Hausgaard&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:38,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Danish singer&quot;,&quot;inception&quot;:&quot;1944&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Niels_Hausgaard&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Maries efterår</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Niels Hausgaard</span>
+                        <span class="badge badge-inception">Est: 1944</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 38%</span>
+                    </div>
+                    <div class="artist-bio">Danish singer</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Niels%20Hausgaard&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Niels%20Hausgaard" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Niels_Hausgaard" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;0c9de40c-1493-486e-a5a5-5eb9723f41aa&quot;,&quot;title&quot;:&quot;Talking in the Garden&quot;,&quot;artist&quot;:&quot;Shawn Phillips&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;rock&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:33,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American folk-rock musician&quot;,&quot;inception&quot;:&quot;1943&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Shawn_Phillips&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Talking in the Garden</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Shawn Phillips</span>
+                        <span class="badge badge-inception">Est: 1943</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 33%</span>
+                    </div>
+                    <div class="artist-bio">American folk-rock musician</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> rock</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Shawn%20Phillips&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Shawn%20Phillips" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Shawn_Phillips" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;1a212a29-a77f-4e06-8d70-bafe5603730a&quot;,&quot;title&quot;:&quot;Piano Concerto no. 1 in B-sharp minor, op. 23&quot;,&quot;artist&quot;:&quot;The Portsmouth Sinfonia&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:56,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/The_Portsmouth_Sinfonia&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Piano Concerto no. 1 in B-sharp minor, op. 23</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>The Portsmouth Sinfonia</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 56%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=The%20Portsmouth%20Sinfonia&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=The%20Portsmouth%20Sinfonia" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/The_Portsmouth_Sinfonia" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;2ff3acbb-0327-413c-babf-501f20b839a9&quot;,&quot;title&quot;:&quot;Desgosto&quot;,&quot;artist&quot;:&quot;Simone&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:43,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Brazilian singer&quot;,&quot;inception&quot;:&quot;1973&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Simone&quot;},&quot;era&quot;:&quot;Prime Era&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Desgosto</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Simone</span>
+                        <span class="badge badge-inception">Est: 1973</span>
+                        <span class="badge badge-era">Prime Era</span>
+                        <span class="badge badge-heatmap">Density: 43%</span>
+                    </div>
+                    <div class="artist-bio">Brazilian singer</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Simone&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Simone" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Simone" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;e40d6206-cc60-4a59-85ce-9ca8729700c6&quot;,&quot;title&quot;:&quot;Tripping Through the Rose Garden&quot;,&quot;artist&quot;:&quot;Michael Yonkers&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:27,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American rock guitarist&quot;,&quot;inception&quot;:&quot;1947&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Michael_Yonkers&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Tripping Through the Rose Garden</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Michael Yonkers</span>
+                        <span class="badge badge-inception">Est: 1947</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 27%</span>
+                    </div>
+                    <div class="artist-bio">American rock guitarist</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Michael%20Yonkers&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Michael%20Yonkers" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Michael_Yonkers" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;420ef4a4-36bf-4d2f-a661-346290f4d2ab&quot;,&quot;title&quot;:&quot;Never Never Live Without You&quot;,&quot;artist&quot;:&quot;Michèle Torr&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:46,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;French singer&quot;,&quot;inception&quot;:&quot;1962&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Michèle_Torr&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Never Never Live Without You</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Michèle Torr</span>
+                        <span class="badge badge-inception">Est: 1962</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 46%</span>
+                    </div>
+                    <div class="artist-bio">French singer</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Mich%C3%A8le%20Torr&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Mich%C3%A8le%20Torr" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Michèle_Torr" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;32e9c29f-3923-4208-ac56-69457f1878bd&quot;,&quot;title&quot;:&quot;Right in the Next Room&quot;,&quot;artist&quot;:&quot;Sarah Vaughan&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:41,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American jazz and classical singer (1924–1990)&quot;,&quot;inception&quot;:&quot;1942&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Sarah_Vaughan&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Right in the Next Room</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Sarah Vaughan</span>
+                        <span class="badge badge-inception">Est: 1942</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 41%</span>
+                    </div>
+                    <div class="artist-bio">American jazz and classical singer (1924–1990)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Sarah%20Vaughan&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Sarah%20Vaughan" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Sarah_Vaughan" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;695a7aa1-95af-4255-a42b-d0b4d9b75883&quot;,&quot;title&quot;:&quot;Rosamunde&quot;,&quot;artist&quot;:&quot;Kjell Höglund&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:26,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Swedish singer&quot;,&quot;inception&quot;:&quot;1965&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Kjell_Höglund&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Rosamunde</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Kjell Höglund</span>
+                        <span class="badge badge-inception">Est: 1965</span>
+                        
+                        <span class="badge badge-heatmap">Density: 26%</span>
+                    </div>
+                    <div class="artist-bio">Swedish singer</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Kjell%20H%C3%B6glund&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Kjell%20H%C3%B6glund" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Kjell_Höglund" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;fbcb7179-6a50-4faa-b17d-2411c0d7b021&quot;,&quot;title&quot;:&quot;Abandono&quot;,&quot;artist&quot;:&quot;Eliana Pittman&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:43,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Brazilian actress and singer (1945-)&quot;,&quot;inception&quot;:&quot;1945&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Eliana_Pittman&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Abandono</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Eliana Pittman</span>
+                        <span class="badge badge-inception">Est: 1945</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 43%</span>
+                    </div>
+                    <div class="artist-bio">Brazilian actress and singer (1945-)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Eliana%20Pittman&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Eliana%20Pittman" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Eliana_Pittman" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;7dfdd618-d502-457a-b292-0fabe38acf30&quot;,&quot;title&quot;:&quot;Funky baby&quot;,&quot;artist&quot;:&quot;Barrabás&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:40,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Spanish musical group&quot;,&quot;inception&quot;:&quot;1971&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Barrabás&quot;},&quot;era&quot;:&quot;Prime Era&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Funky baby</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Barrabás</span>
+                        <span class="badge badge-inception">Est: 1971</span>
+                        <span class="badge badge-era">Prime Era</span>
+                        <span class="badge badge-heatmap">Density: 40%</span>
+                    </div>
+                    <div class="artist-bio">Spanish musical group</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Barrab%C3%A1s&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Barrab%C3%A1s" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Barrabás" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;6b5ce292-29f9-4920-b428-0cbf09a24a98&quot;,&quot;title&quot;:&quot;Bells Ringing&quot;,&quot;artist&quot;:&quot;Prudence&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:20,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Norwegian rock band&quot;,&quot;inception&quot;:&quot;1969&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Prudence&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Bells Ringing</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Prudence</span>
+                        <span class="badge badge-inception">Est: 1969</span>
+                        
+                        <span class="badge badge-heatmap">Density: 20%</span>
+                    </div>
+                    <div class="artist-bio">Norwegian rock band</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Prudence&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Prudence" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Prudence" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;152f8dfe-5659-49d4-be09-5cb353bed6cd&quot;,&quot;title&quot;:&quot;Dans Fisel - Gavotten ar Menez - An Sagart Cheolnhar&quot;,&quot;artist&quot;:&quot;Alan Stivell&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:36,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Breton musician&quot;,&quot;inception&quot;:&quot;1953&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Alan_Stivell&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Dans Fisel - Gavotten ar Menez - An Sagart Cheolnhar</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Alan Stivell</span>
+                        <span class="badge badge-inception">Est: 1953</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 36%</span>
+                    </div>
+                    <div class="artist-bio">Breton musician</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Alan%20Stivell&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Alan%20Stivell" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Alan_Stivell" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;6d34f93d-4670-4dfa-8139-f0844db623d4&quot;,&quot;title&quot;:&quot;Another Song on My Mind&quot;,&quot;artist&quot;:&quot;Bobby Darin&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;rock, early pop&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:41,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American singer and actor (1936–1973)&quot;,&quot;inception&quot;:&quot;1956&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Bobby_Darin&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Another Song on My Mind</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Bobby Darin</span>
+                        <span class="badge badge-inception">Est: 1956</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 41%</span>
+                    </div>
+                    <div class="artist-bio">American singer and actor (1936–1973)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> rock, early pop</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Bobby%20Darin&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Bobby%20Darin" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Bobby_Darin" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;7d20172c-06c0-42f2-b1e4-cb5309c9110e&quot;,&quot;title&quot;:&quot;Are You Ready for That Rock and Roll&quot;,&quot;artist&quot;:&quot;Bay City Rollers&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:48,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Scottish musical group; rock n pop band&quot;,&quot;inception&quot;:&quot;1966&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Bay_City_Rollers&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Are You Ready for That Rock and Roll</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Bay City Rollers</span>
+                        <span class="badge badge-inception">Est: 1966</span>
+                        
+                        <span class="badge badge-heatmap">Density: 48%</span>
+                    </div>
+                    <div class="artist-bio">Scottish musical group; rock n pop band</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Bay%20City%20Rollers&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Bay%20City%20Rollers" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Bay_City_Rollers" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;709d9c26-e8a3-4997-850a-42eec6544949&quot;,&quot;title&quot;:&quot;Green Dolphin Street&quot;,&quot;artist&quot;:&quot;Maynard Ferguson&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:56,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Canadian jazz musician and bandleader (1928–2006)&quot;,&quot;inception&quot;:&quot;1939&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Maynard_Ferguson&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Green Dolphin Street</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Maynard Ferguson</span>
+                        <span class="badge badge-inception">Est: 1939</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 56%</span>
+                    </div>
+                    <div class="artist-bio">Canadian jazz musician and bandleader (1928–2006)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Maynard%20Ferguson&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Maynard%20Ferguson" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Maynard_Ferguson" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;90e9d115-3630-4600-b49e-45d4473c30ee&quot;,&quot;title&quot;:&quot;A Happy Way to Live&quot;,&quot;artist&quot;:&quot;The Lundstroms&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:38,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/The_Lundstroms&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">A Happy Way to Live</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>The Lundstroms</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 38%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=The%20Lundstroms&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=The%20Lundstroms" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/The_Lundstroms" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;e47b2852-252c-4be0-9c45-da281ac8265f&quot;,&quot;title&quot;:&quot;Sångerna vrenskas&quot;,&quot;artist&quot;:&quot;Ola Magnell&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:50,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;Swedish singer, songwriter and record producer (1946–2020)&quot;,&quot;inception&quot;:&quot;1972&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Ola_Magnell&quot;},&quot;era&quot;:&quot;Prime Era&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Sångerna vrenskas</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Ola Magnell</span>
+                        <span class="badge badge-inception">Est: 1972</span>
+                        <span class="badge badge-era">Prime Era</span>
+                        <span class="badge badge-heatmap">Density: 50%</span>
+                    </div>
+                    <div class="artist-bio">Swedish singer, songwriter and record producer (1946–2020)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Ola%20Magnell&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Ola%20Magnell" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Ola_Magnell" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;ae60c18b-6a9d-4244-9bd4-2b1016348cf6&quot;,&quot;title&quot;:&quot;Bobine&quot;,&quot;artist&quot;:&quot;Johnny Ventura y su Combo Show&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:21,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Johnny_Ventura_y_su_Combo_Show&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Bobine</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Johnny Ventura y su Combo Show</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 21%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Johnny%20Ventura%20y%20su%20Combo%20Show&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Johnny%20Ventura%20y%20su%20Combo%20Show" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Johnny_Ventura_y_su_Combo_Show" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;72af4798-04e0-4aae-a604-678ad8cae878&quot;,&quot;title&quot;:&quot;I’m Weak for You&quot;,&quot;artist&quot;:&quot;Harold Melvin &amp; The Blue Notes&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:38,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American musical group&quot;,&quot;inception&quot;:&quot;1954&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Harold_Melvin_&amp;_The_Blue_Notes&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">I’m Weak for You</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Harold Melvin &amp; The Blue Notes</span>
+                        <span class="badge badge-inception">Est: 1954</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 38%</span>
+                    </div>
+                    <div class="artist-bio">American musical group</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Harold%20Melvin%20%26%20The%20Blue%20Notes&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Harold%20Melvin%20%26%20The%20Blue%20Notes" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Harold_Melvin_&amp;_The_Blue_Notes" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;0344d0ca-44ce-43fc-a67d-ba9b991b69ce&quot;,&quot;title&quot;:&quot;Killing Floor&quot;,&quot;artist&quot;:&quot;Howlin’ Wolf&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:45,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American blues musician (1910–1976)&quot;,&quot;inception&quot;:&quot;1930&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Howlin’_Wolf&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Killing Floor</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Howlin’ Wolf</span>
+                        <span class="badge badge-inception">Est: 1930</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 45%</span>
+                    </div>
+                    <div class="artist-bio">American blues musician (1910–1976)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Howlin%E2%80%99%20Wolf&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Howlin%E2%80%99%20Wolf" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Howlin’_Wolf" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;751ab340-3eca-453b-83e2-815cadb34be2&quot;,&quot;title&quot;:&quot;Virgin Man&quot;,&quot;artist&quot;:&quot;Smokey Robinson&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;pop, soul&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:28,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American R&amp;B singer, songwriter and producer&quot;,&quot;inception&quot;:&quot;1955&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Smokey_Robinson&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Virgin Man</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Smokey Robinson</span>
+                        <span class="badge badge-inception">Est: 1955</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 28%</span>
+                    </div>
+                    <div class="artist-bio">American R&amp;B singer, songwriter and producer</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> pop, soul</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Smokey%20Robinson&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Smokey%20Robinson" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Smokey_Robinson" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;ee09ef94-c2e2-4bb8-9bc2-8099568a4181&quot;,&quot;title&quot;:&quot;The Champ&quot;,&quot;artist&quot;:&quot;Sonny Stitt&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:28,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Sonny_Stitt&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">The Champ</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Sonny Stitt</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 28%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Sonny%20Stitt&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Sonny%20Stitt" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Sonny_Stitt" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;cf019cc3-27eb-467f-ac1d-4059a70301c3&quot;,&quot;title&quot;:&quot;Herido&quot;,&quot;artist&quot;:&quot;Raphy Leavitt y Orquesta La Selecta&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:59,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Raphy_Leavitt_y_Orquesta_La_Selecta&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Herido</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Raphy Leavitt y Orquesta La Selecta</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 59%</span>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Raphy%20Leavitt%20y%20Orquesta%20La%20Selecta&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Raphy%20Leavitt%20y%20Orquesta%20La%20Selecta" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Raphy_Leavitt_y_Orquesta_La_Selecta" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;9cc7d0f6-3ebf-46a9-b1a2-f36babe1f9db&quot;,&quot;title&quot;:&quot;Running Bear&quot;,&quot;artist&quot;:&quot;Mud&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;rock, glam&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:47,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;American blues musician (1913–1983)&quot;,&quot;inception&quot;:&quot;1941&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/Mud&quot;},&quot;era&quot;:&quot;Legacy&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Running Bear</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>Mud</span>
+                        <span class="badge badge-inception">Est: 1941</span>
+                        <span class="badge badge-legacy">Legacy</span>
+                        <span class="badge badge-heatmap">Density: 47%</span>
+                    </div>
+                    <div class="artist-bio">American blues musician (1913–1983)</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> rock, glam</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=Mud&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=Mud" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/Mud" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" onchange="toggleFav({&quot;id&quot;:&quot;00b076e0-358e-4d21-88b6-fc7aed47a113&quot;,&quot;title&quot;:&quot;Time to Pass With Goodly Sport - Taundernaken&quot;,&quot;artist&quot;:&quot;The City Waites&quot;,&quot;year&quot;:&quot;1974&quot;,&quot;tags&quot;:&quot;Archive&quot;,&quot;label&quot;:&quot;Independent&quot;,&quot;heatmap&quot;:38,&quot;audioUrl&quot;:null,&quot;verification&quot;:{&quot;desc&quot;:&quot;UK musical ensemble&quot;,&quot;inception&quot;:&quot;N/A&quot;,&quot;wiki&quot;:&quot;https://en.wikipedia.org/wiki/The_City_Waites&quot;},&quot;era&quot;:&quot;&quot;})">
+                <div class="song-details">
+                    <div class="song-title">Time to Pass With Goodly Sport - Taundernaken</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>The City Waites</span>
+                        
+                        
+                        <span class="badge badge-heatmap">Density: 38%</span>
+                    </div>
+                    <div class="artist-bio">UK musical ensemble</div>
+                    
+                    
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> 1974</div>
+                        <div><b>Label</b> Independent</div>
+                        <div><b>Tags</b> Archive</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=The%20City%20Waites&amp;year=1974" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=The%20City%20Waites" target="_blank" class="btn">RYM Bridge</a>
+                        <a href="https://en.wikipedia.org/wiki/The_City_Waites" target="_blank" class="badge badge-wiki">Wiki</a>
+                    </div>
+                </div>
+            </div>
+        </div></div></div></div>
+    </div>
+    <div id="view-favorites" class="view-section">
+        <div id="favorites-container"></div>
+    </div>
+</main>
+
+<script>
+    let favorites = new Map();
+    let artistCache = new Map();
+
+    // Init Years
+    const ys = document.getElementById('year-select');
+    for(let y=2026; y>=1930; y--) {
+        const o = document.createElement('option');
+        o.value = y; o.textContent = y; ys.appendChild(o);
+    }
+    ys.value = 1974;
+
+    window.addEventListener('scroll', () => {
+        const headings = document.querySelectorAll('.year-heading');
+        headings.forEach(h => {
+            const rect = h.getBoundingClientRect();
+            if (rect.top <= 160) h.classList.add('minimized');
+            else h.classList.remove('minimized');
+        });
+    });
+
+    function switchView(id) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.getElementById(`view-${id}`).classList.add('active');
+        if(id === 'favorites') renderList(Array.from(favorites.values()), 'favorites-container', 'SAVED');
+    }
+
+    async function verifyArtistData(name) {
+        if(artistCache.has(name)) return artistCache.get(name);
+        try {
+            const res = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(name)}&language=en&format=json&origin=*&limit=5`);
+            const data = await res.json();
+            
+            // MUSICAL ENFORCEMENT
+            const musicKeywords = ['musician', 'band', 'singer', 'group', 'orchestra', 'rapper', 'composer', 'pianist', 'guitarist', 'drummer', 'artist', 'duo', 'trio', 'ensemble', 'vocalist', 'dj', 'producer'];
+            
+            let bestMatch = null;
+            for (let item of data.search) {
+                const desc = (item.description || "").toLowerCase();
+                if (musicKeywords.some(kw => desc.includes(kw))) {
+                    bestMatch = item;
+                    break;
+                }
+            }
+
+            if(!bestMatch) {
+                artistCache.set(name, { desc: "", inception: "N/A", wiki: `https://en.wikipedia.org/wiki/${name.replace(/\s+/g, '_')}` });
+                return artistCache.get(name);
+            }
+
+            const qid = bestMatch.id;
+            const cRes = await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&props=claims|descriptions&format=json&origin=*`);
+            const cData = await cRes.json();
+            const claims = cData.entities[qid].claims;
+            
+            let inception = "N/A";
+            const dateClaim = claims.P571?.[0] || claims.P2031?.[0] || claims.P569?.[0];
+            if (dateClaim?.mainsnak?.datavalue?.value?.time) {
+                const match = dateClaim.mainsnak.datavalue.value.time.match(/\+?(\d{4})/);
+                if(match) inception = match[1];
+            }
+
+            const info = { desc: bestMatch.description, inception, wiki: `https://en.wikipedia.org/wiki/${name.replace(/\s+/g, '_')}` };
+            artistCache.set(name, info);
+            return info;
+        } catch(e) {}
+        return null;
+    }
+
+    async function runEngine() {
+        const yearVal = ys.value;
+        const genre = document.getElementById('genre-select').value;
+        const artistQ = document.getElementById('artist-search').value;
+        const unique = document.getElementById('unique-toggle').checked;
+        const showAudio = document.getElementById('audio-toggle').checked;
+        const loader = document.getElementById('loading');
+        const songQ = document.getElementById('song-search').value;
+        loader.style.display = 'block';
+        document.getElementById('songs-container').innerHTML = '';
+
+        let query = yearVal === 'all' ? 'date:[1930 TO 2026]' : `date:${yearVal}`;
+        const genreMaps = {
+            'discovery': '(tag:"post-punk" OR tag:"shoegaze" OR tag:"dream pop" OR tag:"indie" OR tag:"alternative")',
+            'soul': '(tag:"soul" OR tag:"motown")',
+            'northern-soul': 'tag:"northern soul"',
+            'rnb': '(tag:"r&b" OR tag:"funk")',
+            'indie': '(tag:"indie" OR tag:"post-punk")',
+            'blues': '(tag:"blues" OR tag:"blues-rock")',     
+'folk': '(tag:"folk")',    
+
+            'electronic': '(tag:"electronic" OR tag:"idm")'
+        };
+
+        if(genre !== 'all') query += ` AND ${genreMaps[genre] || `tag:"${genre}"`}`;
+        if(artistQ) query += ` AND artist:"${artistQ}"`;
+if(songQ) query += ` AND recording:"${songQ}"`;
+            
+        try {
+            const res = await fetch(`https://musicbrainz.org/ws/2/recording?query=${encodeURIComponent(query)}&limit=100&fmt=json`);
+            const data = await res.json();
+            let tracks = data.recordings || [];
+
+            if(unique) {
+                const seen = new Set();
+                tracks = tracks.filter(t => {
+                    const n = t['artist-credit']?.[0]?.name;
+                    if(!n || seen.has(n.toLowerCase())) return false;
+                    seen.add(n.toLowerCase());
+                    return true;
+                });
+            }
+
+            const results = await Promise.all(tracks.slice(0, 50).map(async t => {
+                const artistName = t['artist-credit']?.[0]?.name;
+                const verification = await verifyArtistData(artistName);
+                
+                let eraBadge = "";
+                if(verification && verification.inception !== "N/A" && t['first-release-date']) {
+                    const relYear = parseInt(t['first-release-date'].split('-')[0]);
+                    const incYear = parseInt(verification.inception);
+                    const gap = relYear - incYear;
+                    if(gap <= 3 && gap >= -10) eraBadge = "Prime Era";
+                    else if(gap >= 12) eraBadge = "Legacy";
+                }
+
+                const label = t['releases']?.[0]?.['label-info']?.[0]?.label?.name || "Independent";
+                const heatmap = Math.min(100, Math.floor(Math.random() * 40) + 20);
+
+                let audioUrl = null;
+                if(showAudio) {
+                    try {
+                        const aRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(artistName + " " + t.title)}&limit=1&entity=song`);
+                        const aData = await aRes.json();
+                        audioUrl = aData.results?.[0]?.previewUrl;
+                    } catch(e) {}
+                }
+
+                return {
+                    id: t.id,
+                    title: t.title,
+                    artist: artistName,
+                    year: (t['first-release-date'] || "").split('-')[0] || yearVal,
+                    tags: t.tags?.slice(0,2).map(g => g.name).join(', ') || "Archive",
+                    label,
+                    heatmap,
+                    audioUrl,
+                    verification,
+                    era: eraBadge
+                };
+            }));
+
+            renderList(results, 'songs-container', yearVal === 'all' ? 'ALL' : yearVal);
+        } catch(e) { console.error(e); }
+        loader.style.display = 'none';
+    }
+
+    function renderList(data, target, heading) {
+        const cont = document.getElementById(target);
+        cont.innerHTML = '';
+        const row = document.createElement('div');
+        row.className = 'year-row';
+        
+        const html = data.map(s => `
+            <div class="song-entry">
+                <input type="checkbox" class="fav-checkbox" ${favorites.has(s.id)?'checked':''} onchange='toggleFav(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
+                <div class="song-details">
+                    <div class="song-title">${s.title}</div>
+                    <div style="font-weight:800; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                        <span>${s.artist}</span>
+                        ${s.verification && s.verification.inception !== "N/A" ? `<span class="badge badge-inception">Est: ${s.verification.inception}</span>` : ''}
+                        ${s.era ? `<span class="badge ${s.era==='Prime Era'?'badge-era':'badge-legacy'}">${s.era}</span>` : ''}
+                        <span class="badge badge-heatmap">Density: ${s.heatmap}%</span>
+                    </div>
+                    ${s.verification && s.verification.desc ? `<div class="artist-bio">${s.verification.desc}</div>` : ''}
+                    
+                    ${s.audioUrl ? `<audio controls class="audio-player"><source src="${s.audioUrl}" type="audio/mpeg"></audio>` : ''}
+                    
+                    <div class="metadata">
+                        <div><b>Year</b> ${s.year}</div>
+                        <div><b>Label</b> ${s.label}</div>
+                        <div><b>Tags</b> ${s.tags}</div>
+                    </div>
+
+                    <div class="knowledge-bridge">
+                        <a href="https://www.discogs.com/search/?q=${encodeURIComponent(s.artist)}&year=${s.year}" target="_blank" class="btn">Discogs Bridge</a>
+                        <a href="https://rateyourmusic.com/search?searchterm=${encodeURIComponent(s.artist)}" target="_blank" class="btn">RYM Bridge</a>
+                        ${s.verification ? `<a href="${s.verification.wiki}" target="_blank" class="badge badge-wiki">Wiki</a>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        row.innerHTML = `<div class="year-heading"><h2>${heading}</h2></div><div class="year-content"><div class="song-list">${html || 'No results.'}</div></div>`;
+        cont.appendChild(row);
+    }
+
+    function toggleFav(s) {
+        favorites.has(s.id) ? favorites.delete(s.id) : favorites.set(s.id, s);
+        document.getElementById('fav-count').textContent = favorites.size;
+    }
+
+    function downloadApp() {
+        const html = document.documentElement.outerHTML;
+        const blob = new Blob([html], {type: 'text/html'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Music_Registry_Pro.html';
+        a.click();
+    }
+
+    function toggleTheme() {
+        const current = document.body.getAttribute('data-theme');
+        document.body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+    window.onload = runEngine;
+</script>
+
+
+</body></html>
