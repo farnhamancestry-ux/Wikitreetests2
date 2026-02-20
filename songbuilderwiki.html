@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Intel Curator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #fff; color: #000; overflow-x: hidden; }
+        input::placeholder { color: rgba(0,0,0,0.2); }
+        .wiki-content h2 { font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin-top: 2rem; border-bottom: 2px solid black; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .wiki-content p { margin-bottom: 1rem; line-height: 1.6; font-size: 0.9rem; }
+        .wiki-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.75rem; text-transform: uppercase; }
+        .wiki-content th, .wiki-content td { border: 1px solid #eee; padding: 8px; text-align: left; }
+        .wiki-content img, .wiki-content .thumb, .wiki-content .infobox-image, .wiki-content .mw-empty-elt, .wiki-content .navbox, .wiki-content .metadata { display: none !important; }
+        .active-tab { border-bottom: 4px solid black; opacity: 1 !important; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .search-suggestion:hover { background: #000; color: #fff; }
+        /* Smaller audio controls style */
+        audio.mini-player { height: 24px; width: 100px; filter: grayscale(1) invert(0); mix-blend-mode: multiply; }
+        @media (max-width: 640px) { audio.mini-player { width: 60px; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const App = () => {
+            const [tab, setTab] = useState('profile');
+            const [artistInput, setArtistInput] = useState('');
+            const [resolvedTitle, setResolvedTitle] = useState('');
+            const [suggestions, setSuggestions] = useState([]);
+            const [song, setSong] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [content, setContent] = useState('');
+            const [releaseData, setReleaseData] = useState(null);
+            const [bioTimeline, setBioTimeline] = useState([]);
+            const [catalogItems, setCatalogItems] = useState([]);
+            const [directSingles, setDirectSingles] = useState([]);
+            const [itunesSongs, setItunesSongs] = useState([]);
+            const [status, setStatus] = useState('READY');
+            
+            const debounceTimer = useRef(null);
+
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [content, tab, bioTimeline, catalogItems, directSingles, itunesSongs]);
+
+            const fetchSuggestions = async (val) => {
+                if (!val || val.length < 2) {
+                    setSuggestions([]);
+                    return;
+                }
+                try {
+                    const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(val)}&format=json&origin=*`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    setSuggestions(data.query.search || []);
+                } catch (e) { console.error(e); }
+            };
+
+            const handleInputChange = (e) => {
+                const val = e.target.value;
+                setArtistInput(val);
+                clearTimeout(debounceTimer.current);
+                debounceTimer.current = setTimeout(() => fetchSuggestions(val), 300);
+            };
+
+            const selectArtist = (title) => {
+                setArtistInput(title.toUpperCase());
+                setResolvedTitle(title);
+                setSuggestions([]);
+                executeSearch(title);
+            };
+
+            const executeSearch = async (targetTitle = resolvedTitle || artistInput) => {
+                if (!targetTitle) return;
+                setLoading(true);
+                setSuggestions([]);
+                
+                try {
+                    if (tab === 'profile' || tab === 'disco') {
+                        const finalTitle = tab === 'disco' ? `${targetTitle} discography` : targetTitle;
+                        const url = `https://en.wikipedia.org/api/rest_v1/page/html/${encodeURIComponent(finalTitle)}`;
+                        const res = await fetch(url);
+                        if (!res.ok) throw new Error('Not found');
+                        const html = await res.text();
+                        setContent(html.replace(/<img[^>]*>/g, ""));
+                        setStatus(`LOADED: ${targetTitle}`);
+                    } else if (tab === 'release') {
+                        await fetchReleaseDate(targetTitle);
+                    } else if (tab === 'extraction') {
+                        await extractBioTimeline(targetTitle);
+                    } else if (tab === 'catalog') {
+                        await extractCatalog(targetTitle);
+                    } else if (tab === 'direct_singles') {
+                        await extractDirectSingles(targetTitle);
+                    } else if (tab === 'itunes_lookup') {
+                        await fullItunesLookup(targetTitle);
+                    }
+                } catch (e) {
+                    setStatus('ERROR');
+                    setContent('<div class="p-10 text-center font-black opacity-20 uppercase tracking-tighter">Information not found.</div>');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const fetchReleaseDate = async (targetTitle) => {
+                if (!song) return;
+                setStatus('SEARCHING SONG...');
+                const searchQuery = `${song} ${targetTitle} song`;
+                const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&format=json&origin=*`;
+                const searchRes = await fetch(searchUrl);
+                const searchData = await searchRes.json();
+                
+                const title = searchData.query.search[0].title;
+                const contentUrl = `https://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&titles=${encodeURIComponent(title)}&format=json&origin=*`;
+                const contentRes = await fetch(contentUrl);
+                const contentData = await contentRes.json();
+                
+                const pages = contentData.query.pages;
+                const pageId = Object.keys(pages)[0];
+                const wikitext = pages[pageId].revisions[0]['*'];
+                
+                setReleaseData({
+                    title: title,
+                    date: (wikitext.match(/released\s*=\s*([^|\n}]+)/i) || [])[1]?.replace(/[\{\}]/g, '').trim() || 'NOT FOUND',
+                    label: (wikitext.match(/label\s*=\s*([^|\n}]+)/i) || [])[1]?.trim() || 'UNKNOWN',
+                    genre: (wikitext.match(/genre\s*=\s*([^|\n}]+)/i) || [])[1]?.trim() || 'UNKNOWN',
+                });
+                setStatus('FOUND');
+            };
+
+            const sanitizeForiTunes = (title, artist) => {
+                if (!title) return '';
+                let clean = title.replace(/['"]+/g, '');
+                const noise = /\b(their|first|the|band|single|singles|ep|album|lp|released|recorded|track|titled|entitled|by|debut|up and comer|promotional)\b/gi;
+                clean = clean.replace(noise, '').trim();
+                if (clean.length < 2 || clean.toLowerCase() === artist.toLowerCase()) return '';
+                return clean;
+            };
+
+            const extractBioTimeline = async (targetTitle) => {
+                setStatus('INTERROGATING TEXT...');
+                const url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=true&titles=${encodeURIComponent(targetTitle)}&format=json&origin=*`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const page = Object.values(data.query.pages)[0];
+                const fullText = page.extract || "";
+
+                const yearRegex = /\b(19\d{2}|20\d{2})\b/g;
+                
+                let events = [];
+                const segments = fullText.split(/\n+/);
+                const artistNameOnly = targetTitle.split('(')[0].trim();
+                
+                for (const segment of segments) {
+                    const sentences = segment.split(/[.!?]\s+/);
+                    for (const sentence of sentences) {
+                        const years = sentence.match(yearRegex);
+                        const isSingle = /\b(single|song|track|up and comer)\b/i.test(sentence);
+                        const isAlbum = /\b(album|lp|record|studio album)\b/i.test(sentence);
+
+                        if (years && (isSingle || isAlbum)) {
+                            const quoteMatch = sentence.match(/"([^"]+)"|'([^']+)'/);
+                            let rawTitle = quoteMatch ? (quoteMatch[1] || quoteMatch[2]) : '';
+
+                            if (!rawTitle && isSingle) {
+                                const singleIndex = sentence.toLowerCase().indexOf('single');
+                                const sub = sentence.substring(Math.max(0, singleIndex - 30), Math.min(sentence.length, singleIndex + 30));
+                                const capsMatch = sub.match(/([A-Z][a-z]+(\s[A-Z][a-z]+)*)/g);
+                                if (capsMatch) {
+                                    rawTitle = capsMatch.find(c => c.toLowerCase() !== artistNameOnly.toLowerCase() && c.length > 2) || '';
+                                }
+                            }
+
+                            const cleanTitle = sanitizeForiTunes(rawTitle, artistNameOnly);
+
+                            for (const year of years) {
+                                events.push({ 
+                                    year: parseInt(year), 
+                                    text: sentence.trim().replace(/\[\d+\]/g, ''),
+                                    type: isAlbum && !isSingle ? 'ALBUM' : 'SINGLE',
+                                    searchTitle: cleanTitle
+                                });
+                            }
+                        }
+                    }
+                }
+
+                const uniqueEvents = events.filter((v, i, a) => a.findIndex(t => (t.year === v.year && t.text === v.text)) === i).sort((a, b) => a.year - b.year);
+                setBioTimeline(uniqueEvents);
+                
+                setStatus('LINKING AUDIO...');
+                const enriched = [...uniqueEvents];
+                for (let i = 0; i < enriched.length; i++) {
+                    if (enriched[i].type === 'SINGLE' && enriched[i].searchTitle) {
+                        try {
+                            await new Promise(r => setTimeout(r, 700)); 
+                            const q = encodeURIComponent(`${artistNameOnly} ${enriched[i].searchTitle}`);
+                            const itRes = await fetch(`https://itunes.apple.com/search?term=${q}&limit=1&media=music&entity=song&origin=*`);
+                            const itData = await itRes.json();
+                            if (itData.results?.[0]) {
+                                enriched[i].itunes = itData.results[0];
+                                setBioTimeline([...enriched]);
+                            }
+                        } catch (e) { console.error(e); }
+                    }
+                }
+                setStatus('READY');
+            };
+
+            const extractCatalog = async (targetTitle) => {
+                setStatus('SCANNING TABLES...');
+                const url = `https://en.wikipedia.org/api/rest_v1/page/html/${encodeURIComponent(targetTitle)}`;
+                const res = await fetch(url);
+                const html = await res.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const artistNameOnly = targetTitle.split('(')[0].trim();
+                
+                const tables = doc.querySelectorAll('table');
+                let foundTitles = [];
+                
+                tables.forEach(table => {
+                    const headers = Array.from(table.querySelectorAll('th')).map(h => h.innerText.toLowerCase());
+                    const titleIdx = headers.findIndex(h => h.includes('title') || h.includes('single') || h.includes('album'));
+                    
+                    if (titleIdx !== -1) {
+                        const rows = table.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            if (cells[titleIdx]) {
+                                let titleText = cells[titleIdx].innerText.replace(/\[\d+\]/g, '').trim();
+                                titleText = titleText.replace(/^"|"$/g, '').replace(/^'|'$/g, '');
+                                if (titleText && titleText.length > 1 && isNaN(titleText)) {
+                                    foundTitles.push(titleText);
+                                }
+                            }
+                        });
+                    }
+                });
+
+                const uniqueTitles = [...new Set(foundTitles)].slice(0, 50);
+                setCatalogItems(uniqueTitles.map(t => ({ title: t, itunes: null })));
+
+                for (let i = 0; i < uniqueTitles.length; i++) {
+                    setStatus(`LINKING ${i+1}/${uniqueTitles.length}`);
+                    try {
+                        await new Promise(r => setTimeout(r, 500));
+                        const q = encodeURIComponent(`${artistNameOnly} ${uniqueTitles[i]}`);
+                        const itRes = await fetch(`https://itunes.apple.com/search?term=${q}&limit=1&media=music&origin=*`);
+                        const itData = await itRes.json();
+                        if (itData.results?.[0]) {
+                            setCatalogItems(prev => {
+                                const next = [...prev];
+                                next[i].itunes = itData.results[0];
+                                return next;
+                            });
+                        }
+                    } catch (e) { console.error(e); }
+                }
+                setStatus('READY');
+            };
+
+            const extractDirectSingles = async (targetTitle) => {
+                setStatus('EXTRACTING QUOTES...');
+                const url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=true&titles=${encodeURIComponent(targetTitle)}&format=json&origin=*`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const page = Object.values(data.query.pages)[0];
+                const fullText = page.extract || "";
+                const artistNameOnly = targetTitle.split('(')[0].trim();
+
+                const quoteRegex = /"([^"]+)"|'([^']+)'/g;
+                let foundItems = [];
+                const segments = fullText.split(/[.!?]\s+/);
+
+                for (const segment of segments) {
+                    const match = segment.match(/"([^"]+)"|'([^']+)'/);
+                    const yearMatch = segment.match(/\b(19\d{2}|20\d{2})\b/);
+                    
+                    if (match && yearMatch) {
+                        const rawTitle = match[1] || match[2];
+                        const cleanTitle = sanitizeForiTunes(rawTitle, artistNameOnly);
+                        
+                        if (cleanTitle && cleanTitle.length > 2) {
+                            foundItems.push({
+                                title: cleanTitle,
+                                year: yearMatch[0],
+                                context: segment.substring(0, 160).trim() + "...",
+                                itunes: null
+                            });
+                        }
+                    }
+                }
+
+                const uniqueSingles = foundItems.filter((v, i, a) => a.findIndex(t => t.title.toLowerCase() === v.title.toLowerCase()) === i).slice(0, 50);
+                setDirectSingles(uniqueSingles);
+
+                for (let i = 0; i < uniqueSingles.length; i++) {
+                    setStatus(`VERIFYING ${i+1}/${uniqueSingles.length}`);
+                    try {
+                        await new Promise(r => setTimeout(r, 400));
+                        const q = encodeURIComponent(`${artistNameOnly} ${uniqueSingles[i].title}`);
+                        const itRes = await fetch(`https://itunes.apple.com/search?term=${q}&limit=1&media=music&entity=song&origin=*`);
+                        const itData = await itRes.json();
+                        if (itData.results?.[0]) {
+                            setDirectSingles(prev => {
+                                const next = [...prev];
+                                next[i].itunes = itData.results[0];
+                                return next;
+                            });
+                        }
+                    } catch (e) { console.error(e); }
+                }
+                setStatus('COMPLETED');
+            };
+
+            const fullItunesLookup = async (targetTitle) => {
+                setStatus('QUERYING ITUNES...');
+                const artistNameOnly = targetTitle.split('(')[0].trim();
+                try {
+                    const q = encodeURIComponent(artistNameOnly);
+                    const res = await fetch(`https://itunes.apple.com/search?term=${q}&limit=200&media=music&entity=song&origin=*`);
+                    const data = await res.json();
+                    
+                    if (data.results) {
+                        const seen = new Set();
+                        const unique = data.results.filter(item => {
+                            const name = item.trackName.toLowerCase();
+                            if (seen.has(name)) return false;
+                            seen.add(name);
+                            return true;
+                        });
+
+                        const sorted = unique.sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate));
+                        setItunesSongs(sorted);
+                        setStatus(`LOADED ${sorted.length} TRACKS`);
+                    } else {
+                        setItunesSongs([]);
+                        setStatus('NO RESULTS');
+                    }
+                } catch (e) {
+                    console.error(e);
+                    setStatus('API ERROR');
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-white">
+                    <header className="p-3 border-b border-black flex justify-between items-center sticky top-0 bg-white z-50">
+                        <h1 className="text-[10px] font-black uppercase tracking-[0.3em]">Artist Intelligence Repository</h1>
+                        <span className="text-[9px] font-bold opacity-40 uppercase">{status}</span>
+                    </header>
+
+                    <nav className="flex border-b border-black bg-white sticky top-[45px] z-40 overflow-x-auto no-scrollbar">
+                        {[
+                            { id: 'profile', label: 'Profile' },
+                            { id: 'disco', label: 'Discography' },
+                            { id: 'release', label: 'Release Date' },
+                            { id: 'extraction', label: 'Bio Extract' },
+                            { id: 'catalog', label: 'Catalog Link' },
+                            { id: 'direct_singles', label: 'Direct Singles' },
+                            { id: 'itunes_lookup', label: 'iTunes Lookup' }
+                        ].map((t) => (
+                            <button key={t.id} onClick={() => setTab(t.id)} className={`flex-1 min-w-[100px] py-3 text-[9px] font-black uppercase tracking-widest opacity-40 transition-all ${tab === t.id ? 'active-tab' : ''}`}>
+                                {t.label}
+                            </button>
+                        ))}
+                    </nav>
+
+                    <main className="p-4 md:p-8 max-w-4xl mx-auto">
+                        <div className="mb-8 space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex flex-col relative">
+                                    <span className="text-[8px] font-black uppercase tracking-widest mb-1 opacity-40">Target Artist</span>
+                                    <input className="w-full border border-black p-3 text-sm font-bold uppercase outline-none focus:bg-zinc-50" value={artistInput} onChange={handleInputChange} onKeyDown={e => e.key === 'Enter' && executeSearch()} placeholder="SEARCH..." />
+                                    {suggestions.length > 0 && (
+                                        <div className="absolute top-full left-0 w-full bg-white border-x border-b border-black z-[60] shadow-2xl">
+                                            {suggestions.slice(0, 50).map((s, idx) => (
+                                                <div key={idx} onClick={() => selectArtist(s.title)} className="search-suggestion p-3 text-[10px] font-black uppercase cursor-pointer border-b border-black/5 last:border-0">{s.title}</div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                {tab === 'release' && (
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black uppercase tracking-widest mb-1 opacity-40">Track Name</span>
+                                        <input className="w-full border border-black p-3 text-sm font-bold uppercase outline-none focus:bg-zinc-50" value={song} onChange={e => setSong(e.target.value)} onKeyDown={e => e.key === 'Enter' && executeSearch()} placeholder="TITLE" />
+                                    </div>
+                                )}
+                            </div>
+                            <button onClick={() => executeSearch()} className="w-full bg-black text-white py-4 text-[10px] font-black uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all">
+                                {loading ? 'INTERROGATING...' : 'EXECUTE QUERY'}
+                            </button>
+                        </div>
+
+                        <div className="relative min-h-[400px]">
+                            {loading && <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10"><div className="w-12 h-1 bg-black animate-pulse"></div></div>}
+
+                            {(tab === 'profile' || tab === 'disco') && <div className="wiki-content animate-in fade-in" dangerouslySetInnerHTML={{ __html: content }} />}
+
+                            {tab === 'release' && releaseData && (
+                                <div className="space-y-8 animate-in fade-in">
+                                    <h2 className="text-4xl font-black uppercase tracking-tighter">{releaseData.title}</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
+                                        {['Date', 'Label', 'Genre'].map(f => (
+                                            <div key={f} className="border border-black p-6">
+                                                <span className="text-[8px] font-black uppercase opacity-30 block mb-4">{f}</span>
+                                                <span className="text-xl font-black italic tracking-tighter">{releaseData[f.toLowerCase()]}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {tab === 'extraction' && (
+                                <div className="space-y-12 animate-in fade-in">
+                                    <div className="border-b border-black pb-4">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.4em]">Chronological Milestone Extract</h3>
+                                        <p className="text-[8px] font-bold opacity-30 uppercase mt-1">Smart Title detection active</p>
+                                    </div>
+                                    <div className="space-y-10">
+                                        {bioTimeline.map((item, idx) => (
+                                            <div key={idx} className="flex gap-6 items-start group">
+                                                <div className="flex flex-col items-center gap-2 min-w-[80px]">
+                                                    <div className="text-3xl font-black italic tracking-tighter leading-none text-zinc-300 group-hover:text-black transition-colors">{item.year}</div>
+                                                    <div className={`text-[7px] font-black px-1.5 py-0.5 border border-black ${item.type === 'ALBUM' ? 'bg-black text-white' : ''}`}>{item.type}</div>
+                                                </div>
+                                                <div className="flex-1 space-y-4">
+                                                    <div className="text-[11px] leading-relaxed font-bold opacity-70 group-hover:opacity-100">{item.text}</div>
+                                                    {item.type === 'SINGLE' && item.itunes && (
+                                                        <div className="flex items-center gap-4 bg-zinc-50 p-2 border border-black/10 animate-in fade-in slide-in-from-left-2">
+                                                            <div className="flex-1 overflow-hidden">
+                                                                <span className="text-[9px] font-black uppercase block truncate">{item.itunes.trackName}</span>
+                                                                <span className="text-[7px] opacity-40 uppercase font-bold">iTunes Verified</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-2">
+                                                                <audio controls className="mini-player opacity-30 hover:opacity-100">
+                                                                    <source src={item.itunes.previewUrl} type="audio/x-m4a" />
+                                                                </audio>
+                                                                <a href={item.itunes.trackViewUrl} target="_blank" className="p-1 border border-black hover:bg-black hover:text-white transition-all"><i data-lucide="play" size="10"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {tab === 'catalog' && (
+                                <div className="space-y-8 animate-in fade-in">
+                                    <div className="border-b border-black pb-4">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.4em]">Table-Based Catalog Scan</h3>
+                                        <p className="text-[8px] font-bold opacity-30 uppercase mt-1">Linking wiki table entries to iTunes metadata</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {catalogItems.map((item, idx) => (
+                                            <div key={idx} className="border border-black p-4 flex flex-col justify-between group hover:bg-zinc-50">
+                                                <div className="mb-4">
+                                                    <span className="text-[7px] font-black opacity-30 uppercase block mb-1">Detected Entry</span>
+                                                    <span className="text-sm font-black uppercase tracking-tight leading-tight">{item.title}</span>
+                                                </div>
+                                                {item.itunes ? (
+                                                    <div className="flex items-center gap-3 pt-4 border-t border-black/5">
+                                                        <div className="flex-1 overflow-hidden">
+                                                            <span className="text-[8px] font-black block truncate uppercase">{item.itunes.trackName || item.itunes.collectionName}</span>
+                                                            <span className="text-[7px] opacity-40 block uppercase">{item.itunes.primaryGenreName} | {item.itunes.country}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            {item.itunes.previewUrl && (
+                                                                <audio controls className="mini-player opacity-20 hover:opacity-100">
+                                                                    <source src={item.itunes.previewUrl} type="audio/x-m4a" />
+                                                                </audio>
+                                                            )}
+                                                            <a href={item.itunes.trackViewUrl || item.itunes.collectionViewUrl} target="_blank" className="p-1.5 border border-black hover:bg-black hover:text-white transition-all">
+                                                                <i data-lucide="external-link" size="10"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="h-10 flex items-center justify-center border border-dashed border-black/10 opacity-20">
+                                                        <span className="text-[8px] font-bold uppercase">No Metadata Link</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {tab === 'direct_singles' && (
+                                <div className="space-y-8 animate-in fade-in">
+                                    <div className="border-b border-black pb-4">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.4em]">Advanced Quote-Based Extraction</h3>
+                                        <p className="text-[8px] font-bold opacity-30 uppercase mt-1">Scanning biography text for titles in quotes near years</p>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {directSingles.map((item, idx) => (
+                                            <div key={idx} className="border border-black p-4 group hover:bg-zinc-50 transition-colors">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-2xl font-black italic text-zinc-300">{item.year}</span>
+                                                        <span className="text-sm font-black uppercase tracking-tight">"{item.title}"</span>
+                                                    </div>
+                                                    {item.itunes && <span className="text-[7px] font-black px-2 py-1 bg-black text-white uppercase tracking-widest">Verified</span>}
+                                                </div>
+                                                <p className="text-[9px] font-medium opacity-40 mb-4 italic leading-relaxed">{item.context}</p>
+                                                
+                                                {item.itunes && (
+                                                    <div className="flex items-center gap-4 pt-3 border-t border-black/5 bg-white/50 p-2">
+                                                        <div className="flex-1 overflow-hidden">
+                                                            <span className="text-[9px] font-black uppercase block truncate">{item.itunes.trackName}</span>
+                                                            <span className="text-[7px] opacity-40 uppercase font-bold truncate">{item.itunes.collectionName}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <audio controls className="mini-player opacity-40 hover:opacity-100">
+                                                                <source src={item.itunes.previewUrl} type="audio/x-m4a" />
+                                                            </audio>
+                                                            <a href={item.itunes.trackViewUrl} target="_blank" className="p-1.5 border border-black hover:bg-black hover:text-white transition-all">
+                                                                <i data-lucide="play" size="10"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                        {directSingles.length === 0 && !loading && (
+                                            <div className="p-20 text-center opacity-20 font-black uppercase text-xs">No direct quotes detected in context</div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {tab === 'itunes_lookup' && (
+                                <div className="space-y-8 animate-in fade-in">
+                                    <div className="border-b border-black pb-4">
+                                        <h3 className="text-xs font-black uppercase tracking-[0.4em]">Comprehensive iTunes Song Repository</h3>
+                                        <p className="text-[8px] font-bold opacity-30 uppercase mt-1">Chronological discography mapping via iTunes API (Deduplicated)</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        {itunesSongs.map((item, idx) => (
+                                            <div key={idx} className="border border-black p-3 flex items-center justify-between group hover:bg-zinc-50 transition-colors">
+                                                <div className="flex items-center gap-4 flex-1 min-w-0">
+                                                    <div className="min-w-[45px] sm:min-w-[60px]">
+                                                        <span className="text-[14px] font-black italic text-zinc-300">{new Date(item.releaseDate).getFullYear()}</span>
+                                                    </div>
+                                                    <div className="flex-1 truncate">
+                                                        <span className="text-[10px] font-black uppercase block truncate">{item.trackName}</span>
+                                                        <span className="text-[8px] opacity-40 uppercase font-bold truncate">{item.collectionName}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2 ml-4">
+                                                    <audio controls className="mini-player opacity-20 hover:opacity-100">
+                                                        <source src={item.previewUrl} type="audio/x-m4a" />
+                                                    </audio>
+                                                    <a href={item.trackViewUrl} target="_blank" className="p-1.5 border border-black hover:bg-black hover:text-white transition-all shrink-0">
+                                                        <i data-lucide="external-link" size="10"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {itunesSongs.length === 0 && !loading && (
+                                            <div className="p-20 text-center opacity-20 font-black uppercase text-xs">Execute search to retrieve song data</div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
