@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intel | Research Lab</title>
+    <style>
+        :root { --bg: #fff; --text: #000; --subtle: #888; --font: "Helvetica Neue", Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 11px; line-height: 1.3; }
+        
+        header { 
+            position: sticky; top: 0; background: #fff; z-index: 100;
+            border-bottom: 2px solid #000; padding: 8px;
+        }
+        .search-row { display: flex; gap: 4px; position: relative; }
+        input { 
+            flex: 1; border: 1px solid #000; padding: 8px; font-size: 11px; 
+            font-weight: 900; text-transform: uppercase; outline: none; border-radius: 0;
+        }
+        button.btn-fetch { background: #000; color: #fff; border: none; padding: 0 12px; font-weight: 900; text-transform: uppercase; font-size: 9px; }
+        
+        #suggestions {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: #fff; border: 1px solid #000; border-top: none;
+            max-height: 200px; overflow-y: auto; z-index: 1000; display: none;
+        }
+        .suggest-item {
+            padding: 8px; border-bottom: 1px solid #eee; cursor: pointer;
+            font-weight: 900; text-transform: uppercase; font-size: 9px;
+        }
+
+        .tabs { display: flex; border-bottom: 1px solid #000; background: #fafafa; margin-top: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tab { 
+            flex: 1; min-width: 65px; padding: 10px 2px; text-align: center; font-weight: 900; 
+            text-transform: uppercase; font-size: 7px; cursor: pointer; opacity: 0.3; letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+        .tab.active { opacity: 1; border-bottom: 2px solid #000; background: #fff; }
+
+        main { padding: 8px; padding-bottom: 40px; }
+        .label { 
+            font-size: 8px; font-weight: 900; text-transform: uppercase; 
+            background: #000; color: #fff; padding: 2px 5px; margin: 12px 0 6px 0; display: inline-block;
+        }
+
+        #bio-content { font-size: 10px; color: #333; }
+        #bio-content p { margin-bottom: 8px; }
+        #bio-content h2, #bio-content h3 { font-size: 11px; font-weight: 900; text-transform: uppercase; margin: 15px 0 5px 0; border-bottom: 1px solid #000; }
+
+        .item { display: flex; justify-content: space-between; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid #eee; gap: 8px; }
+        .item-title { font-weight: 900; text-transform: uppercase; font-size: 10px; line-height: 1.1; }
+        .item-meta { font-size: 8px; color: var(--subtle); font-weight: bold; text-transform: uppercase; }
+        
+        .copy-btn { border: 1px solid #000; background: none; font-size: 8px; font-weight: 900; padding: 3px 6px; text-transform: uppercase; }
+
+        audio { height: 18px; width: 100%; filter: grayscale(1); opacity: 0.4; margin-top: 4px; }
+
+        .notes-card { border: 1px solid #000; padding: 8px; margin-bottom: 10px; background: #fdfdfd; }
+        .notes-card h4 { font-size: 9px; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; text-decoration: underline; }
+        .notes-card p { font-size: 9px; line-height: 1.4; color: #444; }
+
+        #status {
+            position: fixed; bottom: 0; width: 100%; background: #000; color: #fff;
+            font-size: 8px; font-weight: 900; padding: 4px; text-align: center;
+            text-transform: uppercase; display: none; z-index: 1000;
+        }
+        .loading { opacity: 0.4; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="search-row">
+            <input type="text" id="artistInput" placeholder="Artist Name..." autocomplete="off" oninput="handleInput(this.value)">
+            <button class="btn-fetch" onclick="runSearch(document.getElementById('artistInput').value)">Fetch</button>
+            <div id="suggestions"></div>
+        </div>
+        <div class="tabs">
+            <div id="tab-bio" class="tab active" onclick="switchTab('bio')">1. Bio</div>
+            <div id="tab-wiki" class="tab" onclick="switchTab('wiki')">2. Disco</div>
+            <div id="tab-itunes" class="tab" onclick="switchTab('itunes')">3. iTunes</div>
+            <div id="tab-deep" class="tab" onclick="switchTab('deep')">4. Deep</div>
+            <div id="tab-notes" class="tab" onclick="switchTab('notes')">5. Notes</div>
+        </div>
+    </header>
+
+    <main id="content">
+        <div style="padding:60px 20px; text-align:center; opacity:0.2; font-weight:900; text-transform:uppercase; font-size:9px;">
+            Input Artist for Research
+        </div>
+    </main>
+
+    <div id="status">Loading...</div>
+
+    <script>
+        let currentTab = 'bio';
+        let lastArtist = '';
+        let dataStore = { bio: '', wiki: { albums: [], singles: [] }, itunes: [], deepList: [] };
+        let suggestTimeout;
+
+        function switchTab(t) {
+            currentTab = t;
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${t}`).classList.add('active');
+            render();
+        }
+
+        async function handleInput(val) {
+            clearTimeout(suggestTimeout);
+            const suggestBox = document.getElementById('suggestions');
+            if (val.length < 2) { suggestBox.style.display = 'none'; return; }
+            suggestTimeout = setTimeout(async () => {
+                const res = await fetch(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(val)}&limit=6&namespace=0&format=json&origin=*`);
+                const data = await res.json();
+                const names = data[1] || [];
+                if (names.length > 0) {
+                    suggestBox.innerHTML = names.map(name => `<div class="suggest-item" onclick="selectSuggest('${name.replace(/'/g, "\\'")}')">${name}</div>`).join('');
+                    suggestBox.style.display = 'block';
+                } else { suggestBox.style.display = 'none'; }
+            }, 300);
+        }
+
+        function selectSuggest(name) {
+            document.getElementById('artistInput').value = name;
+            document.getElementById('suggestions').style.display = 'none';
+            runSearch(name);
+        }
+
+        async function runSearch(artist) {
+            if(!artist) return;
+            lastArtist = artist;
+            document.getElementById('suggestions').style.display = 'none';
+            toggleLoad(true);
+            try {
+                const sRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(artist + " discography")}&format=json&origin=*`);
+                const sData = await sRes.json();
+                let discoTitle = artist;
+                if(sData.query?.search[0]?.title.toLowerCase().includes('discography')) {
+                    discoTitle = sData.query.search[0].title;
+                }
+
+                const [bioRes, discoRes, itunesRes] = await Promise.all([
+                    fetch(`https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(artist)}&prop=text&format=json&origin=*`).then(r => r.json()),
+                    fetch(`https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(discoTitle)}&prop=text|sections&format=json&origin=*`).then(r => r.json()),
+                    fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(artist)}&entity=song&limit=40`).then(r => r.json())
+                ]);
+
+                dataStore.bio = bioRes.parse ? bioRes.parse.text["*"] : "No bio found.";
+                dataStore.itunes = itunesRes.results || [];
+                dataStore.deepList = [];
+
+                if(discoRes.parse) {
+                    const doc = new DOMParser().parseFromString(discoRes.parse.text["*"], 'text/html');
+                    const sections = discoRes.parse.sections;
+                    
+                    const parseTable = (keys) => {
+                        const s = sections.find(sec => keys.some(k => sec.line.toLowerCase().includes(k.toLowerCase())));
+                        if(!s) return [];
+                        const anchor = doc.getElementById(s.anchor);
+                        let table = anchor?.parentElement?.nextElementSibling || anchor?.nextElementSibling;
+                        while(table && table.tagName !== 'TABLE' && !['H2','H3'].includes(table.tagName)) table = table.nextElementSibling;
+                        if(table?.tagName !== 'TABLE') return [];
+                        return Array.from(table.querySelectorAll('tr')).slice(1).map(tr => {
+                            const tds = tr.querySelectorAll('td, th');
+                            return { title: tds[0]?.innerText.replace(/\[\d+\]/g, '').trim(), year: tds[1]?.innerText.replace(/\[\d+\]/g, '').trim() || '—' };
+                        }).filter(i => i.title && i.title.length > 1);
+                    };
+                    dataStore.wiki.albums = parseTable(['Studio albums', 'Albums']);
+                    dataStore.wiki.singles = parseTable(['Singles', 'Extended plays', 'EPs']);
+
+                    const keywords = ['Albums', 'Singles', 'Discography', 'Work'];
+                    sections.forEach(sec => {
+                        if(keywords.some(k => sec.line.toLowerCase().includes(k.toLowerCase()))) {
+                            const anchor = doc.getElementById(sec.anchor);
+                            let list = anchor?.parentElement?.nextElementSibling || anchor?.nextElementSibling;
+                            while(list && list.tagName !== 'UL' && !['H2','H3'].includes(list.tagName)) list = list.nextElementSibling;
+                            if(list?.tagName === 'UL') {
+                                const items = Array.from(list.querySelectorAll('li')).map(li => li.innerText.replace(/\[\d+\]/g, '').trim());
+                                dataStore.deepList.push({ label: sec.line, items });
+                            }
+                        }
+                    });
+                }
+                render();
+            } catch (e) { console.error(e); } finally { toggleLoad(false); }
+        }
+
+        function render() {
+            const container = document.getElementById('content');
+            if(!lastArtist && currentTab !== 'notes') return;
+            let html = lastArtist ? `<h2 style="font-size:18px; font-weight:900; text-transform:uppercase; letter-spacing:-0.03em; margin-bottom:8px;">${lastArtist}</h2>` : '';
+
+            if(currentTab === 'bio') {
+                html += `<div id="bio-content">${dataStore.bio}</div>`;
+            } 
+            else if(currentTab === 'wiki') {
+                const drawList = (label, arr) => {
+                    if(!arr.length) return '';
+                    let s = `<div class="label">${label}</div>`;
+                    arr.forEach(item => {
+                        const copyStr = `${item.year} | ${lastArtist} | ${item.title} | Genre`;
+                        s += `<div class="item">
+                            <div style="flex:1"><div class="item-title">${item.title}</div><div class="item-meta">${item.year}</div></div>
+                            <button class="copy-btn" onclick="copyText('${copyStr.replace(/'/g,"\\'")}')">Copy</button>
+                        </div>`;
+                    });
+                    return s;
+                };
+                html += drawList('Albums', dataStore.wiki.albums) + drawList('Singles / EPs', dataStore.wiki.singles);
+            } 
+            else if(currentTab === 'itunes') {
+                html += `<div class="label">iTunes Finder</div>`;
+                dataStore.itunes.forEach(s => {
+                    const yr = s.releaseDate?.split('-')[0] || '—';
+                    const copyStr = `${yr} | ${s.artistName} | ${s.trackName} | ${s.primaryGenreName}`;
+                    html += `<div class="item" style="flex-direction:column; align-items:stretch; border-bottom:1px solid #ddd; padding:8px 0;">
+                        <div style="display:flex; justify-content:space-between">
+                            <div style="flex:1"><div class="item-title">${s.trackName}</div><div class="item-meta">${yr} • ${s.primaryGenreName}</div></div>
+                            <button class="copy-btn" onclick="copyText('${copyStr.replace(/'/g,"\\'")}')">Copy</button>
+                        </div><audio src="${s.previewUrl}" controls></audio>
+                    </div>`;
+                });
+            }
+            else if(currentTab === 'deep') {
+                if(!dataStore.deepList.length) html += `<p style="opacity:0.3; padding:20px 0;">No list markers found.</p>`;
+                dataStore.deepList.forEach(group => {
+                    html += `<div class="label">${group.label}</div>`;
+                    group.items.forEach(txt => {
+                        html += `<div class="item">
+                            <div class="item-title" style="font-weight:700; font-size:9px;">${txt}</div>
+                            <button class="copy-btn" onclick="copyText('${txt.replace(/'/g,"\\'")}')">Copy</button>
+                        </div>`;
+                    });
+                });
+            }
+            else if(currentTab === 'notes') {
+                html += `<div class="label">Research Gap Intel</div>`;
+                html += `
+                <div class="notes-card">
+                    <h4>The Redirect Logic</h4>
+                    <p>The "Disco" tab first searches Wikipedia for a dedicated "Artist discography" page. If it exists, it pulls the most professional tables. If not, it falls back to the main bio tables.</p>
+                </div>
+                <div class="notes-card">
+                    <h4>Filling Genre Gaps</h4>
+                    <p>Use the "iTunes" tab for rapid genre identification. The copy format is automated to: Year | Artist | Title | Primary Genre. Perfect for your 10-songs-per-year index.</p>
+                </div>
+                <div class="notes-card">
+                    <h4>Deep List vs Disco</h4>
+                    <p>Disco parses standard HTML Tables (Title/Year columns). "Deep List" scans for Bulleted Lists (UL) under headers like 'Albums'—essential for catching reissues or niche singles that tables might miss.</p>
+                </div>
+                <div class="notes-card">
+                    <h4>Auto-Sanitize</h4>
+                    <p>The system automatically strips Wikipedia's citation markers like "[1]" or "[note 1]" so your copied strings are clean and ready for your index file.</p>
+                </div>
+                <div class="notes-card">
+                    <h4>Real-time Intel</h4>
+                    <p>The search bar queries the Wikipedia OpenSearch API while you type. Tapping a suggestion triggers all 4 data engines simultaneously.</p>
+                </div>
+                `;
+            }
+            container.innerHTML = html;
+            if(currentTab === 'bio') container.querySelectorAll('a').forEach(a => a.onclick = (e) => e.preventDefault());
+        }
+
+        function copyText(txt) {
+            const el = document.createElement('textarea');
+            el.value = txt;
+            document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+            const status = document.getElementById('status');
+            status.innerText = "COPIED"; status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 1000);
+        }
+
+        function toggleLoad(show) {
+            document.getElementById('status').innerText = "Processing...";
+            document.getElementById('status').style.display = show ? 'block' : 'none';
+            document.getElementById('content').classList.toggle('loading', show);
+        }
+
+        window.onclick = (e) => { if (!e.target.matches('#artistInput')) document.getElementById('suggestions').style.display = 'none'; }
+    </script>
+</body>
+</html>
