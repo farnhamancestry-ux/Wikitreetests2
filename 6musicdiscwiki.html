@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1000songs | 6 Music Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #18181b;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 0.5px solid #efefef;
+        }
+
+        .minami-input {
+            border: none;
+            background: transparent;
+            font-weight: 200;
+            font-size: 1.75rem;
+            width: 100%;
+            padding: 1.25rem 0 0.25rem 0;
+            color: #18181b;
+            letter-spacing: -0.03em;
+        }
+
+        .minami-input:focus { outline: none; }
+        .minami-input::placeholder { color: #e5e7eb; }
+
+        .sort-bar {
+            display: flex;
+            gap: 16px;
+            padding: 12px 0;
+            margin-bottom: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .sort-bar::-webkit-scrollbar { display: none; }
+
+        .sort-opt {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a1a1aa;
+            cursor: pointer;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .sort-opt.active {
+            color: #18181b;
+            font-weight: 600;
+        }
+
+        .list-item {
+            padding: 1.25rem 0;
+            border-bottom: 0.5px solid #f4f4f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-action {
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 10px;
+            border: 0.5px solid #e4e4e7;
+            color: #71717a;
+            border-radius: 2px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-action:active {
+            background: #18181b;
+            color: #fff;
+            border-color: #18181b;
+        }
+
+        .audio-btn {
+            color: #a1a1aa;
+            transition: color 0.2s;
+        }
+
+        .audio-btn.playing {
+            color: #18181b;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .loader {
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #f3f3f3;
+            border-top: 1.5px solid #18181b;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        audio { display: none; }
+    </style>
+</head>
+<body class="max-w-xl mx-auto px-6">
+
+    <header class="header-sticky">
+        <div class="flex items-center justify-between pt-8 pb-1">
+            <span class="text-[9px] font-bold tracking-[0.4em] uppercase text-zinc-400">Archive / 6 Music Live</span>
+            <div id="loading-ui" class="hidden loader"></div>
+        </div>
+        <input 
+            type="text" 
+            id="search-field" 
+            class="minami-input" 
+            placeholder="Search Artist..."
+            autocomplete="off"
+            spellcheck="false"
+        >
+        <div class="sort-bar" id="sort-controls">
+            <span class="sort-opt active" data-sort="default">Relevance</span>
+            <span class="sort-opt" data-sort="popular">Most Played</span>
+            <span class="sort-opt" data-sort="rms">Latest on 6 Music</span>
+        </div>
+    </header>
+
+    <main id="results-engine" class="pb-32">
+        <div id="results-wrap">
+            <div class="mt-32 text-center">
+                <p class="text-zinc-300 font-light text-sm italic">6 Music history search</p>
+            </div>
+        </div>
+    </main>
+
+    <audio id="global-player"></audio>
+
+    <script>
+        const LFM_KEY = 'c799d5e223af638115e8ea64ca1152fe';
+        const searchField = document.getElementById('search-field');
+        const resultsWrap = document.getElementById('results-wrap');
+        const loader = document.getElementById('loading-ui');
+        const player = document.getElementById('global-player');
+        const sortOpts = document.querySelectorAll('.sort-opt');
+
+        let typingTimer;
+        let currentPlayingBtn = null;
+        let currentTracks = [];
+        let currentSort = 'default';
+
+        searchField.addEventListener('input', () => {
+            clearTimeout(typingTimer);
+            const query = searchField.value.trim();
+            if (query.length < 2) return;
+            typingTimer = setTimeout(() => fetchArtistData(query), 500);
+        });
+
+        sortOpts.forEach(opt => {
+            opt.addEventListener('click', async () => {
+                sortOpts.forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                currentSort = opt.dataset.sort;
+                
+                if (currentSort === 'rms') {
+                    await fetch6MusicHistory();
+                } else {
+                    renderList(getSortedTracks());
+                }
+            });
+        });
+
+        async function fetchArtistData(artist) {
+            toggleLoad(true);
+            try {
+                const url = `https://ws.audioscrobbler.com/2.0/?method=track.search&track=${encodeURIComponent(artist)}&api_key=${LFM_KEY}&format=json&limit=40`;
+                const res = await fetch(url);
+                const data = await res.json();
+                currentTracks = data.results.trackmatches.track || [];
+                renderList(getSortedTracks());
+            } catch (e) {
+                resultsWrap.innerHTML = `<div class="mt-20 text-center text-red-400 text-xs">Search unavailable</div>`;
+            } finally {
+                toggleLoad(false);
+            }
+        }
+
+        async function fetch6MusicHistory() {
+            toggleLoad(true);
+            try {
+                const res = await fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=bbc6music&api_key=${LFM_KEY}&format=json&limit=20`);
+                const json = await res.json();
+                
+                const tracks = json.recenttracks.track.map(t => ({
+                    name: t.name,
+                    artist: t.artist['#text'],
+                    listeners: 0
+                }));
+
+                renderList(tracks);
+            } catch (e) {
+                resultsWrap.innerHTML = `<div class="mt-20 text-center text-red-400 text-xs">BBC Feed unavailable</div>`;
+            } finally {
+                toggleLoad(false);
+            }
+        }
+
+        function getSortedTracks() {
+            let tracks = [...currentTracks];
+            if (currentSort === 'popular') {
+                return tracks.sort((a, b) => parseInt(b.listeners || 0) - parseInt(a.listeners || 0));
+            }
+            return tracks;
+        }
+
+        function renderList(tracks) {
+            if (!tracks.length) {
+                resultsWrap.innerHTML = `<div class="mt-32 text-center text-zinc-300 font-light text-sm italic">Nothing found</div>`;
+                return;
+            }
+            resultsWrap.innerHTML = tracks.map((t, i) => {
+                const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(t.artist.replace(/\s+/g, '_'))}`;
+                return `
+                    <div class="list-item">
+                        <div class="flex items-center gap-4 min-w-0 pr-4">
+                            <button onclick="playPreview('${t.artist.replace(/'/g, "\\'")}', '${t.name.replace(/'/g, "\\'")}', this)" class="audio-btn shrink-0">
+                                <i data-lucide="play" class="w-5 h-5"></i>
+                            </button>
+                            <div class="min-w-0">
+                                <h3 class="text-[15px] font-normal text-zinc-900 truncate tracking-tight">${t.name}</h3>
+                                <a href="${wikiUrl}" target="_blank" class="text-[11px] font-light text-zinc-400 truncate block hover:text-zinc-600 transition-colors">${t.artist}</a>
+                                <span id="discogs-year-${i}" class="text-[10px] font-bold text-zinc-900 mt-0.5 block"></span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end gap-2 shrink-0">
+                            <button id="query-btn-${i}" onclick="queryDiscogs('${t.artist.replace(/'/g, "\\'")}', '${t.name.replace(/'/g, "\\'")}', ${i})" class="btn-action">
+                                <i data-lucide="database" class="w-3 h-3"></i> Year
+                            </button>
+                            <a id="link-${i}" href="#" target="_blank" class="text-[10px] uppercase tracking-tighter text-zinc-400 hidden hover:text-zinc-900">Discogs</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        async function queryDiscogs(artist, track, idx) {
+            const btn = document.getElementById(`query-btn-${idx}`);
+            const yearDisplay = document.getElementById(`discogs-year-${idx}`);
+            const link = document.getElementById(`link-${idx}`);
+            btn.innerHTML = `<div class="loader !w-3 !h-3"></div>`;
+            
+            try {
+                const cleanArtist = artist.split(/ feat|&|,| vs| with/i)[0].trim();
+                
+                const baseParams = {
+                    artist: cleanArtist,
+                    track: track,
+                    sort: 'year',
+                    sort_order: 'asc',
+                    per_page: 5
+                };
+
+                const primaryParams = new URLSearchParams(baseParams);
+
+                let res = await fetch(`https://api.discogs.com/database/search?${primaryParams.toString()}`, {
+                    headers: { 'User-Agent': '6MusicArchive/2.0' }
+                });
+                let data = await res.json();
+                
+                if (!data.results || data.results.length === 0) {
+                    const fallbackParams = new URLSearchParams({
+                        q: `${cleanArtist} ${track}`,
+                        sort: 'year',
+                        sort_order: 'asc',
+                        per_page: 5
+                    });
+                    res = await fetch(`https://api.discogs.com/database/search?${fallbackParams.toString()}`, {
+                        headers: { 'User-Agent': '6MusicArchive/2.0' }
+                    });
+                    data = await res.json();
+                }
+
+                const results = data.results || [];
+                const oldestValid = results.find(r => r.year && r.year.length > 0);
+
+                if (oldestValid) {
+                    btn.classList.add('hidden');
+                    yearDisplay.innerText = oldestValid.year ? `[${oldestValid.year}]` : '[N/A]';
+                    link.href = `https://www.discogs.com${oldestValid.uri}`;
+                    link.classList.remove('hidden');
+                } else {
+                    btn.innerText = "No Record";
+                }
+            } catch (err) {
+                btn.innerText = "Error";
+            }
+        }
+
+        async function playPreview(artist, track, btn) {
+            if (currentPlayingBtn) {
+                currentPlayingBtn.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i>`;
+                currentPlayingBtn.classList.remove('playing');
+                lucide.createIcons();
+            }
+
+            if (currentPlayingBtn === btn && !player.paused) {
+                player.pause();
+                currentPlayingBtn = null;
+                return;
+            }
+
+            btn.innerHTML = `<div class="loader !w-4 !h-4"></div>`;
+            
+            try {
+                const searchRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(artist + ' ' + track)}&limit=1&entity=musicTrack`);
+                const searchData = await searchRes.json();
+                
+                if (searchData.results?.[0]?.previewUrl) {
+                    player.src = searchData.results[0].previewUrl;
+                    player.play();
+                    btn.innerHTML = `<i data-lucide="pause" class="w-5 h-5"></i>`;
+                    btn.classList.add('playing');
+                    currentPlayingBtn = btn;
+                } else {
+                    btn.innerHTML = `<i data-lucide="slash" class="w-5 h-5 text-red-200"></i>`;
+                    setTimeout(() => {
+                        btn.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i>`;
+                        lucide.createIcons();
+                    }, 2000);
+                }
+            } catch (e) {
+                btn.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function toggleLoad(show) {
+            loader.classList.toggle('hidden', !show);
+            resultsWrap.style.opacity = show ? '0.4' : '1';
+        }
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
