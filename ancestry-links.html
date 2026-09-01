@@ -12,6 +12,8 @@
             --box-bg: #ffffff;
             --text: #333333;
             --border: #cccccc;
+            --context-bg: #fff8e1;
+            --context-border: #ffc107;
         }
 
         body {
@@ -37,6 +39,7 @@
             color: var(--primary);
             border-bottom: 2px solid var(--primary);
             padding-bottom: 0.5rem;
+            font-size: 1.75rem;
         }
 
         .controls {
@@ -47,10 +50,15 @@
         }
 
         select, button {
-            padding: 0.6rem 1rem;
+            padding: 0.75rem 1rem;
             font-size: 1rem;
             border: 1px solid var(--border);
             border-radius: 4px;
+        }
+
+        select {
+            flex: 1;
+            max-width: 300px;
         }
 
         button {
@@ -60,6 +68,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s;
+            white-space: nowrap;
         }
 
         button:hover {
@@ -86,14 +95,16 @@
         .link-list {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         .link-list li {
             background: var(--bg-color);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             padding: 1rem;
             border-left: 4px solid var(--primary);
             border-radius: 4px;
+            word-wrap: break-word; /* Prevents long URLs from overflowing */
         }
 
         .link-list a {
@@ -101,21 +112,38 @@
             text-decoration: none;
             font-weight: bold;
             font-size: 1.1rem;
+            display: inline-block;
+            margin-bottom: 0.25rem;
         }
 
         .link-list a:hover {
             text-decoration: underline;
         }
 
-        .context {
-            font-size: 0.85rem;
+        .fact-context {
+            font-size: 0.9rem;
+            color: #333;
+            background: var(--context-bg);
+            border-left: 3px solid var(--context-border);
+            padding: 0.5rem 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .fact-context strong {
+            color: #664d03;
+        }
+
+        .template-code {
+            font-size: 0.8rem;
             color: #666;
-            margin-top: 0.3rem;
+            margin-top: 0.5rem;
             font-family: monospace;
             background: #e9ecef;
             padding: 2px 6px;
             border-radius: 3px;
             display: inline-block;
+            word-break: break-all;
         }
         
         .tag-type {
@@ -124,10 +152,11 @@
             text-transform: uppercase;
             background: var(--primary);
             color: white;
-            padding: 2px 6px;
+            padding: 3px 8px;
             border-radius: 12px;
             margin-right: 10px;
-            vertical-align: middle;
+            vertical-align: top;
+            margin-bottom: 5px;
         }
         
         .tag-type.sharing {
@@ -138,6 +167,30 @@
             color: #777;
             font-style: italic;
         }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            select {
+                max-width: 100%;
+            }
+            button {
+                width: 100%;
+                padding: 1rem;
+            }
+            .link-list a {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -147,8 +200,7 @@
     <p>Select your Ancestry subscription domain, paste your WikiTree markup below, and click <strong>Extract Links</strong>.</p>
     
     <div class="controls">
-        <label for="domainSelect"><strong>My Subscription:</strong></label>
-        <select id="domainSelect">
+        <select id="domainSelect" aria-label="Select Ancestry Domain">
             <option value="com">Ancestry.com (US/Global)</option>
             <option value="co.uk">Ancestry.co.uk (UK)</option>
             <option value="com.au">Ancestry.com.au (Australia)</option>
@@ -168,6 +220,54 @@
 </div>
 
 <script>
+    // Helper function to extract the surrounding sentence/fact or <ref> block
+    function getContext(text, matchIndex, matchLength) {
+        let before = text.substring(0, matchIndex);
+        let after = text.substring(matchIndex + matchLength);
+        
+        // Find if it's inside a <ref> tag
+        let refStart = before.lastIndexOf('<ref');
+        let refEnd = after.indexOf('</ref>');
+        let prevRefEnd = before.lastIndexOf('</ref>');
+        
+        let contextText = "";
+
+        // If a <ref is found before the match, and no </ref> closes it before our match
+        if (refStart !== -1 && refStart > prevRefEnd && refEnd !== -1) {
+            contextText = text.substring(refStart, matchIndex + matchLength + refEnd + 6);
+        } else {
+            // Otherwise, grab the specific line the template is on
+            let lineStart = text.lastIndexOf('\n', matchIndex);
+            lineStart = lineStart === -1 ? 0 : lineStart + 1;
+            let lineEnd = text.indexOf('\n', matchIndex + matchLength);
+            lineEnd = lineEnd === -1 ? text.length : lineEnd;
+            contextText = text.substring(lineStart, lineEnd);
+        }
+
+        // Clean up markup for readable display
+        contextText = contextText
+            .replace(/<ref[^>]*>/ig, '') // Remove opening ref tags
+            .replace(/<\/ref>/ig, '')    // Remove closing ref tags
+            .replace(/^\*+/, '')         // Remove bullet points
+            .trim();
+
+        // Truncate if overly long
+        if (contextText.length > 250) {
+            contextText = contextText.substring(0, 247) + '...';
+        }
+
+        return contextText || "Standalone template (No surrounding text)";
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
     function extractLinks() {
         const text = document.getElementById('markupInput').value;
         const domain = document.getElementById('domainSelect').value;
@@ -178,9 +278,7 @@
             return;
         }
 
-        // Regex for {{Ancestry Record|DBID|RecordID}}
         const recordRegex = /\{\{Ancestry Record\|(\d+)\|(\d+)\}\}/gi;
-        // Regex for {{Ancestry Sharing|SharingID|Token}}
         const sharingRegex = /\{\{Ancestry Sharing\|(\d+)\|([a-zA-Z0-9]+)\}\}/gi;
 
         let linksHTML = '<ul class="link-list">';
@@ -191,15 +289,15 @@
         while ((recordMatch = recordRegex.exec(text)) !== null) {
             const dbid = recordMatch[1];
             const recordId = recordMatch[2];
-            // Modern DiscoveryUI URL format for Ancestry records
             const url = `https://www.ancestry.${domain}/discoveryui-content/view/${recordId}:${dbid}`;
+            const context = escapeHtml(getContext(text, recordMatch.index, recordMatch[0].length));
             
             linksHTML += `
                 <li>
                     <span class="tag-type">Record</span>
                     <a href="${url}" target="_blank">View Ancestry Record (DB: ${dbid})</a>
-                    <br>
-                    <span class="context">Template: ${recordMatch[0]}</span>
+                    <div class="fact-context"><strong>Related Fact/Source:</strong> ${context}</div>
+                    <span class="template-code">Template: ${escapeHtml(recordMatch[0])}</span>
                 </li>`;
             foundCount++;
         }
@@ -209,15 +307,15 @@
         while ((sharingMatch = sharingRegex.exec(text)) !== null) {
             const sharingId = sharingMatch[1];
             const token = sharingMatch[2];
-            // Standard Ancestry Sharing URL format
             const url = `https://www.ancestry.${domain}/sharing/${sharingId}?mark=${token}`;
+            const context = escapeHtml(getContext(text, sharingMatch.index, sharingMatch[0].length));
             
             linksHTML += `
                 <li>
                     <span class="tag-type sharing">Sharing</span>
                     <a href="${url}" target="_blank">View Ancestry Sharing Image (${sharingId})</a>
-                    <br>
-                    <span class="context">Template: ${sharingMatch[0]}</span>
+                    <div class="fact-context"><strong>Related Fact/Source:</strong> ${context}</div>
+                    <span class="template-code">Template: ${escapeHtml(sharingMatch[0])}</span>
                 </li>`;
             foundCount++;
         }
@@ -227,7 +325,7 @@
         if (foundCount === 0) {
             outputDiv.innerHTML = '<span class="empty-state">No Ancestry templates found in the pasted text. Make sure it contains {{Ancestry Record|...}} or {{Ancestry Sharing|...}}.</span>';
         } else {
-            outputDiv.innerHTML = `<em>Found ${foundCount} links:</em><br>` + linksHTML;
+            outputDiv.innerHTML = `<p><em>Found ${foundCount} link(s):</em></p>` + linksHTML;
         }
     }
 </script>
