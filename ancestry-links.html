@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiTree Ancestry Link Extractor</title>
+    <style>
+        :root {
+            --primary: #2c5e3b; /* WikiTree green */
+            --primary-hover: #1f4229;
+            --bg-color: #f4f7f6;
+            --box-bg: #ffffff;
+            --text: #333333;
+            --border: #cccccc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--box-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        select, button {
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        textarea {
+            width: 100%;
+            height: 250px;
+            padding: 0.75rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .results-area {
+            margin-top: 2rem;
+        }
+
+        .link-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .link-list li {
+            background: var(--bg-color);
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 4px;
+        }
+
+        .link-list a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .link-list a:hover {
+            text-decoration: underline;
+        }
+
+        .context {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.3rem;
+            font-family: monospace;
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        
+        .tag-type {
+            display: inline-block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            background: var(--primary);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        .tag-type.sharing {
+            background: #d97706;
+        }
+
+        .empty-state {
+            color: #777;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ancestry Link Extractor</h1>
+    <p>Select your Ancestry subscription domain, paste your WikiTree markup below, and click <strong>Extract Links</strong>.</p>
+    
+    <div class="controls">
+        <label for="domainSelect"><strong>My Subscription:</strong></label>
+        <select id="domainSelect">
+            <option value="com">Ancestry.com (US/Global)</option>
+            <option value="co.uk">Ancestry.co.uk (UK)</option>
+            <option value="com.au">Ancestry.com.au (Australia)</option>
+            <option value="ca">Ancestry.ca (Canada)</option>
+            <option value="de">Ancestry.de (Germany)</option>
+            <option value="fr">Ancestry.fr (France)</option>
+        </select>
+        <button onclick="extractLinks()">Extract Links</button>
+    </div>
+
+    <textarea id="markupInput" placeholder="Paste your WikiTree == Biography == or <ref> tags here..."></textarea>
+
+    <div class="results-area">
+        <h2>Extracted Links</h2>
+        <div id="resultsOutput"><span class="empty-state">No links extracted yet. Paste text and click the button above.</span></div>
+    </div>
+</div>
+
+<script>
+    function extractLinks() {
+        const text = document.getElementById('markupInput').value;
+        const domain = document.getElementById('domainSelect').value;
+        const outputDiv = document.getElementById('resultsOutput');
+        
+        if (!text.trim()) {
+            outputDiv.innerHTML = '<span class="empty-state">Please paste some WikiTree markup first.</span>';
+            return;
+        }
+
+        // Regex for {{Ancestry Record|DBID|RecordID}}
+        const recordRegex = /\{\{Ancestry Record\|(\d+)\|(\d+)\}\}/gi;
+        // Regex for {{Ancestry Sharing|SharingID|Token}}
+        const sharingRegex = /\{\{Ancestry Sharing\|(\d+)\|([a-zA-Z0-9]+)\}\}/gi;
+
+        let linksHTML = '<ul class="link-list">';
+        let foundCount = 0;
+
+        // Extract Record Links
+        let recordMatch;
+        while ((recordMatch = recordRegex.exec(text)) !== null) {
+            const dbid = recordMatch[1];
+            const recordId = recordMatch[2];
+            // Modern DiscoveryUI URL format for Ancestry records
+            const url = `https://www.ancestry.${domain}/discoveryui-content/view/${recordId}:${dbid}`;
+            
+            linksHTML += `
+                <li>
+                    <span class="tag-type">Record</span>
+                    <a href="${url}" target="_blank">View Ancestry Record (DB: ${dbid})</a>
+                    <br>
+                    <span class="context">Template: ${recordMatch[0]}</span>
+                </li>`;
+            foundCount++;
+        }
+
+        // Extract Sharing Links
+        let sharingMatch;
+        while ((sharingMatch = sharingRegex.exec(text)) !== null) {
+            const sharingId = sharingMatch[1];
+            const token = sharingMatch[2];
+            // Standard Ancestry Sharing URL format
+            const url = `https://www.ancestry.${domain}/sharing/${sharingId}?mark=${token}`;
+            
+            linksHTML += `
+                <li>
+                    <span class="tag-type sharing">Sharing</span>
+                    <a href="${url}" target="_blank">View Ancestry Sharing Image (${sharingId})</a>
+                    <br>
+                    <span class="context">Template: ${sharingMatch[0]}</span>
+                </li>`;
+            foundCount++;
+        }
+
+        linksHTML += '</ul>';
+
+        if (foundCount === 0) {
+            outputDiv.innerHTML = '<span class="empty-state">No Ancestry templates found in the pasted text. Make sure it contains {{Ancestry Record|...}} or {{Ancestry Sharing|...}}.</span>';
+        } else {
+            outputDiv.innerHTML = `<em>Found ${foundCount} links:</em><br>` + linksHTML;
+        }
+    }
+</script>
+
+</body>
+</html>
